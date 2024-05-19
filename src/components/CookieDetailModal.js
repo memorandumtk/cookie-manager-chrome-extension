@@ -1,5 +1,19 @@
 import React from 'react';
 
+const CookieDetail = ({detail}) => {
+    if (!detail.value) {
+        return null;
+    }
+    return (
+        <div className={'cookie-detail'}>
+           <strong>{detail.key}:</strong>
+            <label>
+                <input type="text" value={detail.value} readOnly/>
+            </label>
+        </div>
+    )
+}
+
 const CookieDetailModal = ({ cookie, onClose }) => {
     if (!cookie) return null;
 
@@ -11,7 +25,8 @@ const CookieDetailModal = ({ cookie, onClose }) => {
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Cookie Details</h2>
                 {details.map(([key, value]) => (
-                    <p key={key}><strong>{key}:</strong> {value}</p>
+                    // <p key={key}><strong>{key}:</strong> {value}</p>
+                    <CookieDetail key={key} detail={{key: key, value: value}} />
                 ))}
             </div>
         </div>
