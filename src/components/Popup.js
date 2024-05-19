@@ -10,13 +10,15 @@ async function getAllCookies(db) {
 const Popup = () => {
     const [cookies, setCookies] = useState([]);
     const [buckets, setBuckets] = useState([]);
-
+    const [filteredCookies, setFilteredCookies] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
     useEffect(() => {
         const fetchData = async () => {
             const db = await initDB();
             const cookiesData = await getAllCookies(db); // Await to fetch all cookies
             console.log('Cookies data:', cookiesData);
             setCookies(cookiesData);
+            setFilteredCookies(cookiesData);
         };
 
         fetchData();
@@ -27,6 +29,7 @@ const Popup = () => {
         await db.delete('cookies', domain);
         const cookiesData = await getAllCookies(db);
         setCookies(cookiesData);
+        setFilteredCookies(cookiesData);
     };
 
     const removeSelectedCookies = async () => {
@@ -42,11 +45,13 @@ const Popup = () => {
         await tx.done; // Ensure the transaction is complete
         const cookiesData = await getAllCookies(db);
         setCookies(cookiesData);
+        setFilteredCookies(cookiesData);
         setBuckets([]); // Clear the selected buckets after removal
+        console.log('All selected cookies were removed.')
     }
 
     const handleCheckboxChange = (event, cookieKeyName) => {
-        const {checked} = event.target;
+        const { checked } = event.target;
         if (checked) {
             setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
         } else {
@@ -54,10 +59,34 @@ const Popup = () => {
         }
     }
 
+    const handleSearchChange = (event) => {
+        const value = event.target.value;
+        setSearchValue(value);
+
+        const filtered = cookies.filter(cookie =>
+            cookie.key_name.includes(value)
+        );
+
+        setFilteredCookies(filtered);
+        console.log('Filtered cookies:', filtered, 'with search value:', value, '.');
+    };
+
     return (
         <div>
             <h1>Cookie Manager</h1>
             <button onClick={removeSelectedCookies}>Remove Selected</button>
+            <br/>
+            <label htmlFor="search-box">
+                Search:
+                <input
+                    type="text"
+                    id="search-box"
+                    name="search-box"
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                />
+            </label>
+            <br/>
             <table>
                 <thead>
                 <tr>
@@ -69,7 +98,7 @@ const Popup = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {cookies.map((cookie) => (
+                {filteredCookies.map((cookie) => (
                     <tr key={cookie.key_name}>
                         <td>
                             <label htmlFor={`checkbox-${cookie.key_name}`}>
