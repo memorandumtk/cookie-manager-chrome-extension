@@ -20,11 +20,9 @@
   "host_permissions": [
     "*://*/"
   ],
-  "icons": [
-    {
-      "src": "logo192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
+  "icons": {
+    "16": "logo16.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
+  }
 }

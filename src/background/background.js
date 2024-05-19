@@ -65,9 +65,10 @@ chrome.cookies.getAll({}, async (cookies) => {
             existingDomain[name] = storedData;
         }
 
-        await db.put('cookies', { name: domain, cookies: existingDomain.cookies });
+        await db.put('cookies', { name: domain, detail: existingDomain[name] });
     }
 
-    console.log(await db.getAll('cookies'));
+    const cookieDataForCheck = await db.getAll('cookies');
+    console.log(cookieDataForCheck[0]);
     console.log('All cookie data is stored in IndexedDB:');
 });
