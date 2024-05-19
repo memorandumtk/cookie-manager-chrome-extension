@@ -1,26 +1,31 @@
-// src/components/Popup.js
 import React, { useEffect, useState } from 'react';
 import { openDB } from 'idb';
+import { initDB } from '../utils/InitDB.js';
+
+// Function to get the stored cookies from IndexedDB
+async function getAllCookies(db) {
+    return await db.getAll('cookies');
+}
 
 const Popup = () => {
     const [cookies, setCookies] = useState([]);
 
-    async function initDB() {
-        const db = await openDB('cookie-manager', 1, {
-            upgrade(db) {
-                db.createObjectStore('cookies', { keyPath: 'name' });
-                db.createObjectStore('details', { keyPath: 'id', autoIncrement: true });
-            }
-        });
-        return db;
-    }
-
-    const dbPromise = initDB();
-
     useEffect(() => {
-        // Get the stored cookies from the indexedDB.
-        // then set the cookie data into the state.
-    });
+        const fetchData = async () => {
+            const db = await initDB();
+            const cookiesData = await getAllCookies(db); // Await to fetch all cookies
+            setCookies(cookiesData);
+        };
+
+        fetchData();
+    }, []); // Empty dependency array to run the effect only once
+
+    const removeCookie = async (domain) => {
+        const db = await openDB('cookie-manager', 1);
+        await db.delete('cookies', domain);
+        const cookiesData = await getAllCookies(db);
+        setCookies(cookiesData);
+    };
 
     return (
         <div>
@@ -36,12 +41,12 @@ const Popup = () => {
                 </thead>
                 <tbody>
                 {cookies.map((cookie) => (
-                    <tr key={cookie.name}>
-                        <td>{cookie.domain}</td>
-                        <td>{cookie.name}</td>
-                        <td>{new Date(cookie.expirationDate * 1000).toLocaleString()}</td>
+                    <tr key={cookie.details.name}>
+                        <td>{cookie.key_name}</td>
+                        <td>{cookie.details.name}</td>
+                        <td>{new Date(cookie.details.expirationDate * 1000).toLocaleString()}</td>
                         <td>
-                            {/*<button onClick={() => removeCookie(cookie.name)}>Remove</button>*/}
+                            <button onClick={() => removeCookie(cookie.key_name)}>Remove</button>
                         </td>
                     </tr>
                 ))}
