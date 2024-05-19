@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { openDB } from 'idb';
-import { initDB } from '../utils/InitDB.js';
-import CookieDetailModal from './CookieDetailModal.js';
-import '../css/popup.css';
+import React, {useEffect, useState} from 'react';
+import {openDB} from 'idb';
+import {initDB} from '../utils/InitDB.js';
 
 // Function to get the stored cookies from IndexedDB
 async function getAllCookies(db) {
@@ -11,11 +9,9 @@ async function getAllCookies(db) {
 
 const Popup = () => {
     const [cookies, setCookies] = useState([]);
-    const [filteredCookies, setFilteredCookies] = useState([]);
     const [buckets, setBuckets] = useState([]);
+    const [filteredCookies, setFilteredCookies] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-    const [selectedCookie, setSelectedCookie] = useState(null);
-
     useEffect(() => {
         const fetchData = async () => {
             const db = await initDB();
@@ -68,20 +64,11 @@ const Popup = () => {
         setSearchValue(value);
 
         const filtered = cookies.filter(cookie =>
-            cookie.key_name.includes(value) ||
-            cookie.details.domain.includes(value) ||
-            cookie.details.name.includes(value)
+            cookie.key_name.includes(value)
         );
 
         setFilteredCookies(filtered);
-    };
-
-    const handleRowClick = (cookie) => {
-        setSelectedCookie(cookie);
-    };
-
-    const closeModal = () => {
-        setSelectedCookie(null);
+        console.log('Filtered cookies:', filtered, 'with search value:', value, '.');
     };
 
     return (
@@ -100,7 +87,6 @@ const Popup = () => {
                 />
             </label>
             <br/>
-            <br/>
             <table>
                 <thead>
                 <tr>
@@ -113,7 +99,7 @@ const Popup = () => {
                 </thead>
                 <tbody>
                 {filteredCookies.map((cookie) => (
-                    <tr key={cookie.key_name} onClick={() => handleRowClick(cookie.details)}>
+                    <tr key={cookie.key_name}>
                         <td>
                             <label htmlFor={`checkbox-${cookie.key_name}`}>
                                 <input
@@ -126,7 +112,7 @@ const Popup = () => {
                             </label>
                         </td>
                         <td>
-                            <button onClick={(e) => { e.stopPropagation(); removeCookie(cookie.key_name); }}>Remove</button>
+                            <button onClick={() => removeCookie(cookie.key_name)}>Remove</button>
                         </td>
                         <td>{cookie.details.domain}</td>
                         <td>{cookie.details.name}</td>
@@ -135,8 +121,6 @@ const Popup = () => {
                 ))}
                 </tbody>
             </table>
-
-            <CookieDetailModal cookie={selectedCookie} onClose={closeModal} />
         </div>
     );
 };

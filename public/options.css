@@ -1,0 +1,26 @@
+/* Simple styling for the options page */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+button {
+    width: 100px;
+}
