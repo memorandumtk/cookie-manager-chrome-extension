@@ -100,10 +100,20 @@ const Popup = () => {
         setFilteredCookies(cookiesData);
     };
 
+    const removeAllCookies = async () => {
+        const db = await openDB('cookie-manager', 1);
+        await db.clear('cookies');
+        const cookiesData = await getAllCookies(db);
+        setCookies(cookiesData);
+        setFilteredCookies(cookiesData);
+    }
+
     return (
         <div>
             <h1>Cookie Manager</h1>
+
             <button onClick={removeSelectedCookies}>Remove Selected</button>
+
             <br/>
             <label htmlFor="search-box">
                 Search:
@@ -116,6 +126,9 @@ const Popup = () => {
                 />
             </label>
             <br/>
+
+            <button onClick={removeAllCookies}>Remove All</button>
+
             <br/>
             <table>
                 <thead>
@@ -142,7 +155,11 @@ const Popup = () => {
                             </label>
                         </td>
                         <td>
-                            <button onClick={(e) => { e.stopPropagation(); removeCookie(cookie.key_name); }}>Remove</button>
+                            <button onClick={(e) => {
+                                e.stopPropagation();
+                                removeCookie(cookie.key_name);
+                            }}>Remove
+                            </button>
                         </td>
                         <td>{cookie.details.domain}</td>
                         <td>{cookie.details.name}</td>
