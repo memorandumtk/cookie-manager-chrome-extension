@@ -13,18 +13,6 @@ async function initDB() {
 
 const dbPromise = initDB();
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    console.log('Message received in background.js:', message);
-    if (message.action === 'openOptionsPage') {
-        const db = await dbPromise;
-        await db.put('details', { details: message.details });
-        console.log('Details stored in background.js:', message.details);
-        chrome.runtime.openOptionsPage();
-        sendResponse({ status: 'Options page opened and details stored' });
-        return true; // Indicate that we will send a response asynchronously
-    }
-});
-
 console.log('Getting all cookie data process is started');
 chrome.cookies.getAll({}, async (cookies) => {
     const db = await dbPromise;
