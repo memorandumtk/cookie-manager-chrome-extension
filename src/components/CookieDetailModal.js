@@ -3,6 +3,7 @@ import React from 'react';
 const CookieDetail = ({ detail, handleDetailChange, cookie }) => {
     const handleChange = (event) => {
         const { name, value } = event.target;
+        console.log('Changed this detail of name: ' + name, ', value: ' + value);
         handleDetailChange(name, value);
     };
 
