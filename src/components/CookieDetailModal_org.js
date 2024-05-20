@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const CookieDetail = ({ detail, handleDetailChange, cookie }) => {
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        handleDetailChange(name, value);
+const CookieDetail = ({ detail, handleDetailChange }) => {
+    if (!detail.value) {
+        return null;
+    }
+
+    const handleChange = (e) => {
+        handleDetailChange(detail.key, e.target.value);
     };
 
     return (
@@ -24,7 +27,6 @@ const CookieDetail = ({ detail, handleDetailChange, cookie }) => {
 const CookieDetailModal = ({ cookie, onClose, handleDetailChange }) => {
     console.log('CookieDetailModal, cookie: ', cookie);
 
-    // Variable to store the details object of the cookie as an array.
     const arrayOfDetails = Object.entries(cookie.details);
 
     return (
@@ -35,9 +37,8 @@ const CookieDetailModal = ({ cookie, onClose, handleDetailChange }) => {
                 {arrayOfDetails.map(([key, value]) => (
                     <CookieDetail
                         key={key}
-                        detail={{ key: key, value: value }}
+                        detail={{ key, value }}
                         handleDetailChange={handleDetailChange}
-                        cookie={cookie}
                     />
                 ))}
             </div>
