@@ -202,6 +202,11 @@ const Popup = () => {
                         </th>
                         <th>
                             Expiration Date
+                            {
+                                sortKey.expirationDate === 'asc'
+                                    ? <span className="arrow-down-domain" onClick={() => sortCookies('expirationDate')}></span>
+                                    : <span className="arrow-up-domain" onClick={() => sortCookies('expirationDate')}></span>
+                            }
                         </th>
                     </tr>
                     </thead>
