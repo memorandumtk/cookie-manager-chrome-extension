@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { openDB } from 'idb';
-import { initDB } from '../utils/InitDB.js';
+import React, {useEffect, useState, useRef} from 'react';
+import {openDB} from 'idb';
+import {initDB} from '../utils/InitDB.js';
 import CookieDetailModal from './CookieDetailModal.js';
 import '../css/popup.css';
 
@@ -34,6 +34,8 @@ const Popup = () => {
     const [searchValue, setSearchValue] = useState('');
     const [selectedCookie, setSelectedCookie] = useState(null);
     const debounceTimerRef = useRef(null);
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortKey, setSortKey] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +76,7 @@ const Popup = () => {
     }
 
     const handleCheckboxChange = (event, cookieKeyName) => {
-        const { checked } = event.target;
+        const {checked} = event.target;
         if (checked) {
             setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
         } else {
@@ -99,7 +101,7 @@ const Popup = () => {
                 );
                 setFilteredCookies(filtered);
             }
-        }, 4000);
+        }, 1000);
     };
 
     const handleRowClick = (cookie) => {
@@ -111,7 +113,7 @@ const Popup = () => {
     };
 
     const handleDetailChange = async (name, value) => {
-        const updatedCookie = { ...selectedCookie, details: { ...selectedCookie.details, [name]: value } };
+        const updatedCookie = {...selectedCookie, details: {...selectedCookie.details, [name]: value}};
         setSelectedCookie(updatedCookie);
 
         console.log('updated: ', updatedCookie);
@@ -135,6 +137,24 @@ const Popup = () => {
         setFilteredCookies(cookiesData);
     }
 
+    const sortCookies = (key) => {
+        console.log(key + ' order will be sorted in ' + sortOrder);
+        const sortedCookies = [...filteredCookies].sort((a, b) => {
+            if (a.details[key] > b.details[key]) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            if (a.details[key] < b.details[key]) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            return 0;
+        });
+
+        console.log('Sorted cookies:', sortedCookies)
+        setFilteredCookies(sortedCookies);
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        setSortKey(key);
+    }
+
     return (
         <div>
             <h1>Cookie Manager</h1>
@@ -149,7 +169,7 @@ const Popup = () => {
                     id="search-box"
                     name="search-box"
                     value={searchValue}
-                    onChange={handleSearchChange} // Corrected line here
+                    onChange={handleSearchChange}
                 />
             </label>
             <br/>
@@ -167,9 +187,32 @@ const Popup = () => {
                     <tr>
                         <th>Select</th>
                         <th>Action</th>
-                        <th>Domain</th>
-                        <th>Name</th>
-                        <th>Expiration Date</th>
+                        <th>
+                            Domain
+                            {
+                                sortOrder === 'asc'
+                                    ? <span className="arrow-down" onClick={() => sortCookies('domain')}></span>
+                                    : <span className="arrow-up" onClick={() => sortCookies('domain')}></span>
+
+                            }
+                        </th>
+                        <th>
+                            Name
+                            {
+                                sortOrder === 'asc'
+                                    ? <span className="arrow-down" onClick={() => sortCookies('name')}></span>
+                                    : <span className="arrow-up" onClick={() => sortCookies('name')}></span>
+
+                            }
+                        </th>
+                        <th>
+                            Expiration Date
+                        {
+                            sortOrder === 'asc'
+                                ? <span className="arrow-down" onClick={() => sortCookies('expirationDate')}></span>
+                                : <span className="arrow-up" onClick={() => sortCookies('expirationDate')}></span>
+                        }
+                        </th>
                     </tr>
                     </thead>
                     <tbody>

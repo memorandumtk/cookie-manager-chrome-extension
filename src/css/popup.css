@@ -11,6 +11,29 @@
     background-color: yellow;
 }
 
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #000;
+}
+
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #000;
+}
+
+.arrow-up:hover,
+.arrow-down:hover{
+    color: gray;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 /*Detail model contents*/
 .modal {
     display: block; /* Ensure modal is visible */
