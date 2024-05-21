@@ -11,7 +11,9 @@
     background-color: yellow;
 }
 
-.arrow-up {
+.arrow-up-domain,
+.arrow-up-name,
+.arrow-up-expirationDate{
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
@@ -19,7 +21,9 @@
     border-bottom: 10px solid #000;
 }
 
-.arrow-down {
+.arrow-down-domain,
+.arrow-down-name,
+.arrow-down-expirationDate {
     width: 0;
     height: 0;
     border-left: 10px solid transparent;

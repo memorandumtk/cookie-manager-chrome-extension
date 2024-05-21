@@ -34,8 +34,7 @@ const Popup = () => {
     const [searchValue, setSearchValue] = useState('');
     const [selectedCookie, setSelectedCookie] = useState(null);
     const debounceTimerRef = useRef(null);
-    const [sortOrder, setSortOrder] = useState('asc');
-    const [sortKey, setSortKey] = useState(null);
+    const [sortKey, setSortKey] = useState({domain: null, name: 'asc', expirationDate: null});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -138,21 +137,19 @@ const Popup = () => {
     }
 
     const sortCookies = (key) => {
-        console.log(key + ' order will be sorted in ' + sortOrder);
+        console.log(key + ' order will be sorted in the order as opposite as: ', sortKey[key]);
         const sortedCookies = [...filteredCookies].sort((a, b) => {
             if (a.details[key] > b.details[key]) {
-                return sortOrder === 'asc' ? 1 : -1;
+                return sortKey[key] === 'asc' ? -1 : 1;
             }
             if (a.details[key] < b.details[key]) {
-                return sortOrder === 'asc' ? -1 : 1;
+                return sortKey[key] === 'asc' ? 1 : -1;
             }
             return 0;
         });
 
-        console.log('Sorted cookies:', sortedCookies)
         setFilteredCookies(sortedCookies);
-        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        setSortKey(key);
+        setSortKey({...sortKey, [key]: sortKey[key] === 'asc' ? 'desc' : 'asc'});
     }
 
     return (
@@ -190,28 +187,21 @@ const Popup = () => {
                         <th>
                             Domain
                             {
-                                sortOrder === 'asc'
-                                    ? <span className="arrow-down" onClick={() => sortCookies('domain')}></span>
-                                    : <span className="arrow-up" onClick={() => sortCookies('domain')}></span>
-
+                                sortKey.domain === 'asc'
+                                    ? <span className="arrow-down-domain" onClick={() => sortCookies('domain')}></span>
+                                    : <span className="arrow-up-domain" onClick={() => sortCookies('domain')}></span>
                             }
                         </th>
                         <th>
                             Name
                             {
-                                sortOrder === 'asc'
-                                    ? <span className="arrow-down" onClick={() => sortCookies('name')}></span>
-                                    : <span className="arrow-up" onClick={() => sortCookies('name')}></span>
-
+                                sortKey.name === 'asc'
+                                    ? <span className="arrow-down-domain" onClick={() => sortCookies('name')}></span>
+                                    : <span className="arrow-up-domain" onClick={() => sortCookies('name')}></span>
                             }
                         </th>
                         <th>
                             Expiration Date
-                        {
-                            sortOrder === 'asc'
-                                ? <span className="arrow-down" onClick={() => sortCookies('expirationDate')}></span>
-                                : <span className="arrow-up" onClick={() => sortCookies('expirationDate')}></span>
-                        }
                         </th>
                     </tr>
                     </thead>
