@@ -132,6 +132,39 @@ const Popup = () => {
         setFilteredCookies(cookiesData);
     }
 
+    // Function to export cookies to a JSON file
+    const exportCookies = async (cookies) => {
+        const blob = new Blob([JSON.stringify(cookies)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cookies.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    // Function to import cookies from a JSON file
+    const importCookies = async (file) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const cookies = JSON.parse(e.target.result);
+            const db = await openDB('cookie-manager', 1);
+            const tx = db.transaction('cookies', 'readwrite');
+            const store = tx.objectStore('cookies');
+
+            for (const cookie of cookies) {
+                await store.put(cookie);
+            }
+
+            await tx.done;
+            // Update the state to reflect the new cookies
+            const cookiesData = await getAllCookies(db);
+            setCookies(cookiesData);
+            setFilteredCookies(cookiesData);
+        };
+        reader.readAsText(file);
+    };
+
     return (
         <div>
             <h1>Cookie Manager</h1>
@@ -155,6 +188,12 @@ const Popup = () => {
             <br/>
 
             <p>Your total number of cookies: {filteredCookies.length}</p>
+            <br/>
+
+            <div>
+                <button onClick={() => exportCookies(filteredCookies)}>Export Cookies</button>
+                <input type="file" accept=".json" onChange={(e) => importCookies(e.target.files[0])}/>
+            </div>
             <br/>
             <br/>
 
