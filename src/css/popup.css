@@ -7,6 +7,10 @@
     cursor: pointer;
 }
 
+.highlight {
+    background-color: yellow;
+}
+
 /*Detail model contents*/
 .modal {
     display: block; /* Ensure modal is visible */

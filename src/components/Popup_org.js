@@ -1,31 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { openDB } from 'idb';
-import { initDB } from '../utils/InitDB.js';
+import React, {useEffect, useState} from 'react';
+import {openDB} from 'idb';
+import {initDB} from '../utils/InitDB.js';
 import CookieDetailModal from './CookieDetailModal.js';
+import HighlightedStrings from '../utils/HighlightedStrings.js';
 import '../css/popup.css';
 
-/**
- *Function to get the stored cookies from IndexedDB
- */
+// Function to get the stored cookies from IndexedDB
 async function getAllCookies(db) {
     return await db.getAll('cookies');
 }
-
-/**
- * Function to highlight the text
- */
-const highlightText = (text, highlight) => {
-    if (!highlight) return text;
-
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return parts.map((part, index) =>
-        part.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={index} className="highlight">{part}</span>
-        ) : (
-            part
-        )
-    );
-};
 
 const Popup = () => {
     const [cookies, setCookies] = useState([]);
@@ -73,7 +56,7 @@ const Popup = () => {
     }
 
     const handleCheckboxChange = (event, cookieKeyName) => {
-        const { checked } = event.target;
+        const {checked} = event.target;
         if (checked) {
             setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
         } else {
@@ -108,7 +91,7 @@ const Popup = () => {
     };
 
     const handleDetailChange = async (name, value) => {
-        const updatedCookie = { ...selectedCookie, details: { ...selectedCookie.details, [name]: value } };
+        const updatedCookie = {...selectedCookie, details: {...selectedCookie.details, [name]: value}};
         setSelectedCookie(updatedCookie);
 
         console.log('updated: ', updatedCookie);
@@ -136,7 +119,7 @@ const Popup = () => {
         <div>
             <h1>Cookie Manager</h1>
 
-            <button onClick={removeSelectedCookies}>Remove Selected Cookie</button>
+            <button onClick={removeSelectedCookies}>Remove Selected</button>
 
             <br/>
             <label htmlFor="search-box">
@@ -152,56 +135,50 @@ const Popup = () => {
             <br/>
 
             <button onClick={removeAllCookies}>Remove All</button>
-            <br/>
 
-            <p>Your total number of cookies: {filteredCookies.length}</p>
             <br/>
-            <br/>
-
-            {filteredCookies.length > 0 ? (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Action</th>
-                        <th>Domain</th>
-                        <th>Name</th>
-                        <th>Expiration Date</th>
+            <table>
+                <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Action</th>
+                    <th>Domain</th>
+                    <th>Name</th>
+                    <th>Expiration Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {filteredCookies.map((cookie) => (
+                    <tr className={'row-of-cookie-data'} key={cookie.key_name} onClick={() => handleRowClick(cookie)}>
+                        <td>
+                            <label htmlFor={`checkbox-${cookie.key_name}`}>
+                                <input
+                                    name={`checkbox-${cookie.key_name}`}
+                                    className={`checkbox-${cookie.key_name}`}
+                                    id={`checkbox-${cookie.key_name}`}
+                                    type="checkbox"
+                                    onChange={(event) => handleCheckboxChange(event, cookie.key_name)}
+                                />
+                            </label>
+                        </td>
+                        <td>
+                            <button onClick={(e) => {
+                                e.stopPropagation();
+                                removeCookie(cookie.key_name);
+                            }}>Remove
+                            </button>
+                        </td>
+                        <td>
+                            <HighlightedStrings text={cookie.details.domain} highlight={searchValue}/>
+                        </td>
+                        <td>
+                            {cookie.details.name}
+                        </td>
+                        <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {filteredCookies.map((cookie) => (
-                        <tr className={'row-of-cookie-data'} key={cookie.key_name}
-                            onClick={() => handleRowClick(cookie)}>
-                            <td>
-                                <label htmlFor={`checkbox-${cookie.key_name}`}>
-                                    <input
-                                        name={`checkbox-${cookie.key_name}`}
-                                        className={`checkbox-${cookie.key_name}`}
-                                        id={`checkbox-${cookie.key_name}`}
-                                        type="checkbox"
-                                        onChange={(event) => handleCheckboxChange(event, cookie.key_name)}
-                                    />
-                                </label>
-                            </td>
-                            <td>
-                                <button onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeCookie(cookie.key_name);
-                                }}>Remove
-                                </button>
-                            </td>
-                            <td>{highlightText(cookie.details.domain, searchValue)}</td>
-                            <td>{highlightText(cookie.details.name, searchValue)}</td>
-                            <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-
-            ) : (
-                <p>No data matched your search criteria.</p>
-            )}
+                ))}
+                </tbody>
+            </table>
 
             {selectedCookie && (
                 <CookieDetailModal

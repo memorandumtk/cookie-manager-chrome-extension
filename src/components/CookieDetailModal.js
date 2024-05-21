@@ -32,7 +32,7 @@ const CookieDetailModal = ({ cookie, onClose, handleDetailChange }) => {
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Cookie Details</h2>
+                <h2>Details</h2>
                 {arrayOfDetails.map(([key, value]) => (
                     <CookieDetail
                         key={key}
