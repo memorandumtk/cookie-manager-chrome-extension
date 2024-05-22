@@ -66,6 +66,10 @@ const Popup = () => {
         setGroupedCookies(grouped);
     }
 
+    const handleGroupingChange = (event) => {
+        setGroupingCriteria(event.target.value);
+    };
+
     const removeCookie = async (key_name) => {
         const db = await openDB('cookie-manager', 1);
         await db.delete('cookies', key_name);
@@ -92,12 +96,36 @@ const Popup = () => {
         console.log('All selected cookies were removed.')
     }
 
-    const handleCheckboxChange = (event, cookieKeyName) => {
-        const {checked} = event.target;
-        if (checked) {
+    const toggleCheckbox = (cookieKeyName) => {
+        const checkbox = document.getElementById(`checkbox-${cookieKeyName}`);
+        checkbox.checked = !checkbox.checked;
+    }
+
+    const handleCheckboxChange = (isChecked, cookieKeyName) => {
+        if (isChecked) {
             setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
         } else {
             setBuckets((prevBuckets) => prevBuckets.filter((bucket) => bucket !== cookieKeyName));
+        }
+    }
+
+    const handleCheckboxOfGroupingChange = (isChecked, group) => {
+        console.log('This group is checked: ', group);
+        const cookies = groupedCookies[group];
+        console.log('Cookies of this group: ')
+        console.log(cookies);
+        console.log('Buckets: ')
+        console.log(buckets)
+        if (isChecked) {
+            cookies.map((cookie) => {
+                handleCheckboxChange(true, cookie.key_name)
+                return toggleCheckbox(cookie.key_name)
+            });
+        } else {
+            cookies.map((cookie) => {
+                handleCheckboxChange(false, cookie.key_name)
+                return toggleCheckbox(cookie.key_name)
+            });
         }
     }
 
@@ -123,7 +151,6 @@ const Popup = () => {
         }
         setFilteredCookies(filtered);
     };
-
 
     const handleRowClick = (cookie) => {
         setSelectedCookie(cookie);
@@ -157,10 +184,6 @@ const Popup = () => {
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
     }
-
-    const handleGroupingChange = (event) => {
-        setGroupingCriteria(event.target.value);
-    };
 
     const sortCookies = (key) => {
         console.log(key + ' order will be sorted in the order as opposite as: ', sortKey[key]);
@@ -220,7 +243,18 @@ const Popup = () => {
             {Object.keys(groupedCookies).length > 0 ? (
                 Object.entries(groupedCookies).map(([group, cookies]) => (
                     <div key={group}>
-                        <h3>{group}</h3>
+                        <div>
+                            <h3>{group}</h3>
+                            <label htmlFor={`checkbox-${group}`}>
+                                <input
+                                    name={`checkbox-${group}`}
+                                    className={`checkbox-${group}`}
+                                    id={`checkbox-${group}`}
+                                    type="checkbox"
+                                    onChange={(event) => handleCheckboxOfGroupingChange(event.target.checked, group)}
+                                />
+                            </label>
+                        </div>
                         <table>
                             <thead>
                             <tr>
@@ -271,7 +305,7 @@ const Popup = () => {
                                                 className={`checkbox-${cookie.key_name}`}
                                                 id={`checkbox-${cookie.key_name}`}
                                                 type="checkbox"
-                                                onChange={(event) => handleCheckboxChange(event, cookie.key_name)}
+                                                onChange={(event) => handleCheckboxChange(event.target.checked, cookie.key_name)}
                                             />
                                         </label>
                                     </td>
