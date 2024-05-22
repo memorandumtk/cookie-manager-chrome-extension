@@ -23,7 +23,7 @@ chrome.cookies.getAll({}, async (cookies) => {
         const domain = cookie.domain;
         const name = cookie.name;
         const trimmedDomain = domain[0] === '.' ? domain.substring(1) : domain;
-        const dbKey = `${name}_of_${trimmedDomain}`;
+        const dbKey = `${trimmedDomain}_of_${name}`;
         const storedData = cookie;
 
         let existingDomain = await store.get(dbKey) || { key_name: dbKey, details: {} };

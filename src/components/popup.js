@@ -1,20 +1,13 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {openDB} from 'idb';
-import {initDB} from '../utils/InitDB.js';
+import React, { useEffect, useState, useRef } from 'react';
+import { openDB } from 'idb';
+import { initDB } from '../utils/InitDB.js';
 import CookieDetailModal from './CookieDetailModal.js';
 import '../css/popup.css';
 
-/**
- *Function to get the stored cookies from IndexedDB
- */
 async function getAllCookies(db) {
-    const allCookies = await db.getAll('cookies');
-    return allCookies;
+    return await db.getAll('cookies');
 }
 
-/**
- * Function to highlight the text
- */
 const highlightText = (text, highlight) => {
     if (!highlight) return text;
 
@@ -37,7 +30,6 @@ const Popup = () => {
     const [groupedCookies, setGroupedCookies] = useState({});
     const [groupingCriteria, setGroupingCriteria] = useState('domain');
     const debounceTimerRef = useRef(null);
-    const [sortKey, setSortKey] = useState({domain: 'asc', name: null, expirationDate: null});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,20 +43,19 @@ const Popup = () => {
         fetchData();
     }, []); // Empty dependency array to run the effect only once
 
-    useEffect(() => {
-        groupCookies(filteredCookies, groupingCriteria);
-    }, [filteredCookies, groupingCriteria]);
-
-    function groupCookies(cookies, criteria) {
+    const groupCookies = (cookies, criteria) => {
         const grouped = cookies.reduce((acc, cookie) => {
-            const key = cookie.details[criteria] !== null ? cookie.details[criteria] : 'undefined';
+            const key = cookie.details[criteria] || 'undefined';
             if (!acc[key]) acc[key] = [];
             acc[key].push(cookie);
             return acc;
         }, {});
-        console.log(grouped)
         setGroupedCookies(grouped);
-    }
+    };
+
+    useEffect(() => {
+        groupCookies(filteredCookies, groupingCriteria);
+    }, [filteredCookies, groupingCriteria]);
 
     const removeCookie = async (key_name) => {
         const db = await openDB('cookie-manager', 1);
@@ -93,7 +84,7 @@ const Popup = () => {
     }
 
     const handleCheckboxChange = (event, cookieKeyName) => {
-        const {checked} = event.target;
+        const { checked } = event.target;
         if (checked) {
             setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
         } else {
@@ -124,7 +115,6 @@ const Popup = () => {
         setFilteredCookies(filtered);
     };
 
-
     const handleRowClick = (cookie) => {
         setSelectedCookie(cookie);
     };
@@ -134,7 +124,7 @@ const Popup = () => {
     };
 
     const handleDetailChange = async (name, value) => {
-        const updatedCookie = {...selectedCookie, details: {...selectedCookie.details, [name]: value}};
+        const updatedCookie = { ...selectedCookie, details: { ...selectedCookie.details, [name]: value } };
         setSelectedCookie(updatedCookie);
 
         console.log('updated: ', updatedCookie);
@@ -162,22 +152,6 @@ const Popup = () => {
         setGroupingCriteria(event.target.value);
     };
 
-    const sortCookies = (key) => {
-        console.log(key + ' order will be sorted in the order as opposite as: ', sortKey[key]);
-        const sortedCookies = [...filteredCookies].sort((a, b) => {
-            if (a.details[key] > b.details[key]) {
-                return sortKey[key] === 'asc' ? -1 : 1;
-            }
-            if (a.details[key] < b.details[key]) {
-                return sortKey[key] === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-
-        setFilteredCookies(sortedCookies);
-        setSortKey({...sortKey, [key]: sortKey[key] === 'asc' ? 'desc' : 'asc'});
-    }
-
     return (
         <div>
             <h1>Cookie Manager</h1>
@@ -197,15 +171,12 @@ const Popup = () => {
             </label>
             <br/>
 
-
             <label htmlFor="grouping-criteria">
                 Group By:
-                <select id="grouping-criteria" name="grouping-criteria" value={groupingCriteria}
-                        onChange={handleGroupingChange}>
+                <select id="grouping-criteria" name="grouping-criteria" value={groupingCriteria} onChange={handleGroupingChange}>
                     <option value="domain">Domain</option>
                     <option value="expirationDate">Expiration Date</option>
-                    <option value="session">Is It A Session Cookie?</option>
-                    <option value="httpOnly">Is It A Http Only Cookie?</option>
+                    <option value="type">Type</option>
                 </select>
             </label>
             <br/>
@@ -226,39 +197,10 @@ const Popup = () => {
                             <tr>
                                 <th>Select</th>
                                 <th>Action</th>
-
-                                <th>
-                                    Domain
-                                    {
-                                        sortKey.domain === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('domain')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('domain')}></span>
-                                    }
-                                </th>
-                                <th>
-                                    Name
-                                    {
-                                        sortKey.name === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('name')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('name')}></span>
-                                    }
-                                </th>
-                                <th>
-                                    Expiration Date
-                                    {
-                                        sortKey.expirationDate === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('expirationDate')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('expirationDate')}></span>
-                                    }
-                                </th>
+                                <th>Domain</th>
+                                <th>Name</th>
+                                <th>Expiration Date</th>
                             </tr>
-
                             </thead>
                             <tbody>
                             {cookies.map((cookie) => (
@@ -291,70 +233,6 @@ const Popup = () => {
                         </table>
                     </div>
                 ))
-                // {filteredCookies.length > 0 ? (
-                //     <table>
-                //         <thead>
-                //         <tr>
-                //             <th>Select</th>
-                //             <th>Action</th>
-                //             <th>
-                //                 Domain
-                //                 {
-                //                     sortKey.domain === 'asc'
-                //                         ? <span className="arrow-down-domain" onClick={() => sortCookies('domain')}></span>
-                //                         : <span className="arrow-up-domain" onClick={() => sortCookies('domain')}></span>
-                //                 }
-                //             </th>
-                //             <th>
-                //                 Name
-                //                 {
-                //                     sortKey.name === 'asc'
-                //                         ? <span className="arrow-down-domain" onClick={() => sortCookies('name')}></span>
-                //                         : <span className="arrow-up-domain" onClick={() => sortCookies('name')}></span>
-                //                 }
-                //             </th>
-                //             <th>
-                //                 Expiration Date
-                //                 {
-                //                     sortKey.expirationDate === 'asc'
-                //                         ? <span className="arrow-down-domain"
-                //                                 onClick={() => sortCookies('expirationDate')}></span>
-                //                         : <span className="arrow-up-domain"
-                //                                 onClick={() => sortCookies('expirationDate')}></span>
-                //                 }
-                //             </th>
-                //         </tr>
-                //         </thead>
-                //         <tbody>
-                //         {filteredCookies.map((cookie) => (
-                //             <tr className={'row-of-cookie-data'} key={cookie.key_name}
-                //                 onClick={() => handleRowClick(cookie)}>
-                //                 <td>
-                //                     <label htmlFor={`checkbox-${cookie.key_name}`}>
-                //                         <input
-                //                             name={`checkbox-${cookie.key_name}`}
-                //                             className={`checkbox-${cookie.key_name}`}
-                //                             id={`checkbox-${cookie.key_name}`}
-                //                             type="checkbox"
-                //                             onChange={(event) => handleCheckboxChange(event, cookie.key_name)}
-                //                         />
-                //                     </label>
-                //                 </td>
-                //                 <td>
-                //                     <button onClick={(e) => {
-                //                         e.stopPropagation();
-                //                         removeCookie(cookie.key_name);
-                //                     }}>Remove
-                //                     </button>
-                //                 </td>
-                //                 <td>{highlightText(cookie.details.domain, searchValue)}</td>
-                //                 <td>{highlightText(cookie.details.name, searchValue)}</td>
-                //                 <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
-                //             </tr>
-                //         ))}
-                //         </tbody>
-                //     </table>
-                //
             ) : (
                 <p>No data matched your search criteria.</p>
             )}
