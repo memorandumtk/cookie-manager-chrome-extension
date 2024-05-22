@@ -205,9 +205,6 @@ const Popup = () => {
         <div>
             <h1>Cookie Manager</h1>
 
-            <button onClick={removeSelectedCookies}>Remove Selected Cookie</button>
-
-            <br/>
             <label htmlFor="search-box">
                 Search:
                 <input
@@ -219,7 +216,6 @@ const Popup = () => {
                 />
             </label>
             <br/>
-
 
             <label htmlFor="grouping-criteria">
                 Group By:
@@ -233,18 +229,23 @@ const Popup = () => {
             </label>
             <br/>
 
-            <button onClick={removeAllCookies}>Remove All</button>
+            <button onClick={removeAllCookies}>Remove All Cookies</button>
+            {
+                buckets.length > 0 && (
+                    <button onClick={removeSelectedCookies}>Remove Selected Cookie</button>
+                )
+            }
+
             <br/>
 
             <p>Your total number of cookies: {filteredCookies.length}</p>
             <br/>
-            <br/>
 
             {Object.keys(groupedCookies).length > 0 ? (
-                Object.entries(groupedCookies).map(([group, cookies]) => (
+                Object.entries(groupedCookies).map(([group, cookies], index) => (
                     <div key={group}>
                         <div>
-                            <h3>{group}</h3>
+                            <p>{group}</p>
                             <label htmlFor={`checkbox-${group}`}>
                                 <input
                                     name={`checkbox-${group}`}
@@ -256,48 +257,50 @@ const Popup = () => {
                             </label>
                         </div>
                         <table>
-                            <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Action</th>
+                            {
+                                index === 0 && (
+                                    <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Action</th>
 
-                                <th>
-                                    Domain
-                                    {
-                                        sortKey.domain === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('domain')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('domain')}></span>
-                                    }
-                                </th>
-                                <th>
-                                    Name
-                                    {
-                                        sortKey.name === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('name')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('name')}></span>
-                                    }
-                                </th>
-                                <th>
-                                    Expiration Date
-                                    {
-                                        sortKey.expirationDate === 'asc'
-                                            ? <span className="arrow-down-domain"
-                                                    onClick={() => sortCookies('expirationDate')}></span>
-                                            : <span className="arrow-up-domain"
-                                                    onClick={() => sortCookies('expirationDate')}></span>
-                                    }
-                                </th>
-                            </tr>
-
-                            </thead>
+                                        <th>
+                                            Domain
+                                            {
+                                                sortKey.domain === 'asc'
+                                                    ? <span className="arrow-down-domain"
+                                                            onClick={() => sortCookies('domain')}></span>
+                                                    : <span className="arrow-up-domain"
+                                                            onClick={() => sortCookies('domain')}></span>
+                                            }
+                                        </th>
+                                        <th>
+                                            Name
+                                            {
+                                                sortKey.name === 'asc'
+                                                    ? <span className="arrow-down-domain"
+                                                            onClick={() => sortCookies('name')}></span>
+                                                    : <span className="arrow-up-domain"
+                                                            onClick={() => sortCookies('name')}></span>
+                                            }
+                                        </th>
+                                        <th>
+                                            Expiration Date
+                                            {
+                                                sortKey.expirationDate === 'asc'
+                                                    ? <span className="arrow-down-domain"
+                                                            onClick={() => sortCookies('expirationDate')}></span>
+                                                    : <span className="arrow-up-domain"
+                                                            onClick={() => sortCookies('expirationDate')}></span>
+                                            }
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                )
+                            }
                             <tbody>
                             {cookies.map((cookie) => (
-                                <tr className={'row-of-cookie-data'} key={cookie.key_name}
-                                    onClick={() => handleRowClick(cookie)}>
+                                <tr className={'row-of-cookie-data'} key={cookie.key_name}>
                                     <td>
                                         <label htmlFor={`checkbox-${cookie.key_name}`}>
                                             <input
@@ -310,6 +313,11 @@ const Popup = () => {
                                         </label>
                                     </td>
                                     <td>
+                                        <button onClick={(e) => {
+                                            e.preventDefault();
+                                            handleRowClick(cookie);
+                                        }}>Details
+                                        </button>
                                         <button onClick={(e) => {
                                             e.stopPropagation();
                                             removeCookie(cookie.key_name);
