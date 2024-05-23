@@ -1,16 +1,18 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {openDB} from 'idb';
-import {initDB} from '../utils/InitDB.js';
 import CookieDetailModal from './CookieDetailModal.js';
 import '../css/popup.css';
+import GetAllCookies from '../utils/GetAllCookies.js';
+import ExportCookies from "../utils/ExportCookies";
+import ImportCookies from "../utils/ImportCookies";
 
 /**
  *Function to get the stored cookies from IndexedDB
  */
-async function getAllCookies(db) {
-    const allCookies = await db.getAll('cookies');
-    return allCookies;
-}
+// async function getAllCookies(db) {
+//     const allCookies = await db.getAll('cookies');
+//     return allCookies;
+// }
 
 /**
  * Function to highlight the text
@@ -41,9 +43,7 @@ const Popup = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const db = await initDB();
-            const cookiesData = await getAllCookies(db); // Await to fetch all cookies
-            console.log('Cookies data:', cookiesData);
+            const cookiesData = await GetAllCookies();
             setCookies(cookiesData);
             setFilteredCookies(cookiesData);
         };
@@ -73,7 +73,7 @@ const Popup = () => {
     const removeCookie = async (key_name) => {
         const db = await openDB('cookie-manager', 1);
         await db.delete('cookies', key_name);
-        const cookiesData = await getAllCookies(db);
+        const cookiesData = await GetAllCookies(db);
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
     };
@@ -89,7 +89,7 @@ const Popup = () => {
         }
 
         await tx.done; // Ensure the transaction is complete
-        const cookiesData = await getAllCookies(db);
+        const cookiesData = await GetAllCookies(db);
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
         setBuckets([]); // Clear the selected buckets after removal
@@ -172,7 +172,7 @@ const Popup = () => {
         await store.put(updatedCookie); // Corrected line: no key parameter
 
         await tx.done;
-        const cookiesData = await getAllCookies(db);
+        const cookiesData = await GetAllCookies(db);
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
     };
@@ -180,7 +180,7 @@ const Popup = () => {
     const removeAllCookies = async () => {
         const db = await openDB('cookie-manager', 1);
         await db.clear('cookies');
-        const cookiesData = await getAllCookies(db);
+        const cookiesData = await GetAllCookies(db);
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
     }
@@ -199,6 +199,14 @@ const Popup = () => {
 
         setFilteredCookies(sortedCookies);
         setSortKey({...sortKey, [key]: sortKey[key] === 'asc' ? 'desc' : 'asc'});
+    }
+
+    const handleExportCookies = async () => {
+       await ExportCookies(filteredCookies);
+    }
+
+    const handleImportCookies = async (file) => {
+        await ImportCookies(file, setCookies, setFilteredCookies);
     }
 
     return (
@@ -237,6 +245,11 @@ const Popup = () => {
             }
 
             <br/>
+
+            <div>
+                <button onClick={handleExportCookies}>Export Cookies</button>
+                <input type="file" accept=".json" onChange={(e) => handleImportCookies(e.target.files[0])}/>
+            </div>
 
             <p>Your total number of cookies: {filteredCookies.length}</p>
             <br/>
@@ -333,70 +346,6 @@ const Popup = () => {
                         </table>
                     </div>
                 ))
-                // {filteredCookies.length > 0 ? (
-                //     <table>
-                //         <thead>
-                //         <tr>
-                //             <th>Select</th>
-                //             <th>Action</th>
-                //             <th>
-                //                 Domain
-                //                 {
-                //                     sortKey.domain === 'asc'
-                //                         ? <span className="arrow-down-domain" onClick={() => sortCookies('domain')}></span>
-                //                         : <span className="arrow-up-domain" onClick={() => sortCookies('domain')}></span>
-                //                 }
-                //             </th>
-                //             <th>
-                //                 Name
-                //                 {
-                //                     sortKey.name === 'asc'
-                //                         ? <span className="arrow-down-domain" onClick={() => sortCookies('name')}></span>
-                //                         : <span className="arrow-up-domain" onClick={() => sortCookies('name')}></span>
-                //                 }
-                //             </th>
-                //             <th>
-                //                 Expiration Date
-                //                 {
-                //                     sortKey.expirationDate === 'asc'
-                //                         ? <span className="arrow-down-domain"
-                //                                 onClick={() => sortCookies('expirationDate')}></span>
-                //                         : <span className="arrow-up-domain"
-                //                                 onClick={() => sortCookies('expirationDate')}></span>
-                //                 }
-                //             </th>
-                //         </tr>
-                //         </thead>
-                //         <tbody>
-                //         {filteredCookies.map((cookie) => (
-                //             <tr className={'row-of-cookie-data'} key={cookie.key_name}
-                //                 onClick={() => handleRowClick(cookie)}>
-                //                 <td>
-                //                     <label htmlFor={`checkbox-${cookie.key_name}`}>
-                //                         <input
-                //                             name={`checkbox-${cookie.key_name}`}
-                //                             className={`checkbox-${cookie.key_name}`}
-                //                             id={`checkbox-${cookie.key_name}`}
-                //                             type="checkbox"
-                //                             onChange={(event) => handleCheckboxChange(event, cookie.key_name)}
-                //                         />
-                //                     </label>
-                //                 </td>
-                //                 <td>
-                //                     <button onClick={(e) => {
-                //                         e.stopPropagation();
-                //                         removeCookie(cookie.key_name);
-                //                     }}>Remove
-                //                     </button>
-                //                 </td>
-                //                 <td>{highlightText(cookie.details.domain, searchValue)}</td>
-                //                 <td>{highlightText(cookie.details.name, searchValue)}</td>
-                //                 <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
-                //             </tr>
-                //         ))}
-                //         </tbody>
-                //     </table>
-                //
             ) : (
                 <p>No data matched your search criteria.</p>
             )}
