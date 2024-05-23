@@ -5,30 +5,9 @@ import '../css/popup.css';
 import GetAllCookies from '../utils/GetAllCookies.js';
 import ExportCookies from "../utils/ExportCookies";
 import ImportCookies from "../utils/ImportCookies";
-
-/**
- *Function to get the stored cookies from IndexedDB
- */
-// async function getAllCookies(db) {
-//     const allCookies = await db.getAll('cookies');
-//     return allCookies;
-// }
-
-/**
- * Function to highlight the text
- */
-const highlightText = (text, highlight) => {
-    if (!highlight) return text;
-
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return parts.map((part, index) =>
-        part.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={index} className="highlight">{part}</span>
-        ) : (
-            part
-        )
-    );
-};
+import removeAllCookies from "../utils/RemoveAllCookies";
+import RemoveSelectedCookies from "../utils/RemoveSelectedCookies";
+import HighlightText from "../utils/HighlightText";
 
 const Popup = () => {
     const [cookies, setCookies] = useState([]);
@@ -78,22 +57,8 @@ const Popup = () => {
         setFilteredCookies(cookiesData);
     };
 
-    const removeSelectedCookies = async () => {
-        const db = await openDB('cookie-manager', 1);
-        const tx = db.transaction('cookies', 'readwrite');
-        const store = tx.objectStore('cookies');
-
-        for (const cookie of buckets) {
-            await store.delete(cookie);
-            console.log('This cookie was removed:', cookie);
-        }
-
-        await tx.done; // Ensure the transaction is complete
-        const cookiesData = await GetAllCookies(db);
-        setCookies(cookiesData);
-        setFilteredCookies(cookiesData);
-        setBuckets([]); // Clear the selected buckets after removal
-        console.log('All selected cookies were removed.')
+    const handleRemoveSelectedCookies = async () => {
+        await RemoveSelectedCookies(buckets, setBuckets, setCookies, setFilteredCookies);
     }
 
     const toggleCheckbox = (cookieKeyName) => {
@@ -177,10 +142,8 @@ const Popup = () => {
         setFilteredCookies(cookiesData);
     };
 
-    const removeAllCookies = async () => {
-        const db = await openDB('cookie-manager', 1);
-        await db.clear('cookies');
-        const cookiesData = await GetAllCookies(db);
+    const handleRemoveAllCookies = async () => {
+        const cookiesData = await removeAllCookies();
         setCookies(cookiesData);
         setFilteredCookies(cookiesData);
     }
@@ -237,10 +200,10 @@ const Popup = () => {
             </label>
             <br/>
 
-            <button onClick={removeAllCookies}>Remove All Cookies</button>
+            <button onClick={handleRemoveAllCookies}>Remove All Cookies</button>
             {
                 buckets.length > 0 && (
-                    <button onClick={removeSelectedCookies}>Remove Selected Cookie</button>
+                    <button onClick={handleRemoveSelectedCookies}>Remove Selected Cookie</button>
                 )
             }
 
@@ -337,8 +300,8 @@ const Popup = () => {
                                         }}>Remove
                                         </button>
                                     </td>
-                                    <td>{highlightText(cookie.details.domain, searchValue)}</td>
-                                    <td>{highlightText(cookie.details.name, searchValue)}</td>
+                                    <td>{HighlightText(cookie.details.domain, searchValue)}</td>
+                                    <td>{HighlightText(cookie.details.name, searchValue)}</td>
                                     <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
                                 </tr>
                             ))}
