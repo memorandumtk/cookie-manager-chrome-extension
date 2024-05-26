@@ -1,7 +1,6 @@
 import { openDB } from 'idb';
-import GetAllCookies from './GetAllCookies';
 
-const ImportCookies = (file, setCookies, setFilteredCookies) => {
+const ImportCookies = (file, setFilteredCookies) => {
     const reader = new FileReader();
     reader.onload = async (event) => {
         const cookies = JSON.parse(event.target.result);
@@ -11,10 +10,8 @@ const ImportCookies = (file, setCookies, setFilteredCookies) => {
         for (const cookie of cookies) {
             await store.put(cookie);
         }
+        setFilteredCookies(cookies);
         await tx.done;
-        const cookiesData = await GetAllCookies(db);
-        setCookies(cookiesData);
-        setFilteredCookies(cookiesData);
     };
     reader.readAsText(file);
 }
