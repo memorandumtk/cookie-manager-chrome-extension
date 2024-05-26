@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import useCookies from '../hooks/UseCookiesCustomHook.js';
+import DateFilter from './DateFilter.js';
 import {openDB} from 'idb';
 import CookieDetailModal from './CookieDetailModal.js';
 import '../css/popup.css';
@@ -19,6 +20,7 @@ const Popup = () => {
     const [groupingCriteria, setGroupingCriteria] = useState('domain');
     const debounceTimerRef = useRef(null);
     const [sortKey, setSortKey] = useState({domain: 'asc', name: null, expirationDate: null});
+    const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
 
     useEffect(() => {
         groupCookies(filteredCookies, groupingCriteria);
@@ -37,6 +39,12 @@ const Popup = () => {
 
     const handleGroupingChange = (event) => {
         setGroupingCriteria(event.target.value);
+    };
+
+
+    const handleDateChange = (startDate, endDate) => {
+        setDateRange({ startDate, endDate });
+        performSearch(searchValue, { startDate, endDate });
     };
 
     const removeCookie = async (key_name) => {
@@ -92,16 +100,23 @@ const Popup = () => {
         }
 
         debounceTimerRef.current = setTimeout(() => {
-            performSearch(value);
+            performSearch(value, dateRange);
         }, 300);
     };
 
-    const performSearch = (value) => {
+    const performSearch = (value, dateRange) => {
         let filtered = cookies;
         if (value) {
             filtered = cookies.filter(cookie =>
                 cookie.details.domain.includes(value) || cookie.details.name.includes(value)
             );
+        }
+        if (dateRange.startDate || dateRange.endDate) {
+            filtered = filtered.filter(cookie => {
+                const expirationDate = cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000) : null;
+                return (!dateRange.startDate || (expirationDate && expirationDate >= dateRange.startDate)) &&
+                    (!dateRange.endDate || (expirationDate && expirationDate <= dateRange.endDate));
+            });
         }
         setFilteredCookies(filtered);
     };
@@ -185,6 +200,9 @@ const Popup = () => {
                     <option value="httpOnly">Is It A Http Only Cookie?</option>
                 </select>
             </label>
+            <br/>
+
+            <DateFilter onDateChange={handleDateChange} />
             <br/>
 
             <button onClick={handleRemoveAllCookies}>Remove All Cookies</button>
