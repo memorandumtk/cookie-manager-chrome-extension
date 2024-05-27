@@ -197,7 +197,7 @@ const Popup = () => {
                     <option value="domain">Domain</option>
                     <option value="expirationDate">Expiration Date</option>
                     <option value="session">Is It A Session Cookie?</option>
-                    <option value="httpOnly">Is It A Http Only Cookie?</option>
+                    <option value="usage">Usage</option>
                 </select>
             </label>
             <br/>

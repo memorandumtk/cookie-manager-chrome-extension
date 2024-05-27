@@ -1,4 +1,3 @@
-// "import" statement should import a module from the directory supposed as a path after built.
 import { openDB } from './idb/node_modules/idb/build/index.js';
 
 async function initDB() {
@@ -15,24 +14,65 @@ const dbPromise = initDB();
 
 console.log('Getting all cookie data process is started');
 chrome.cookies.getAll({}, async (cookies) => {
-    const db = await dbPromise;
-    const tx = db.transaction('cookies', 'readwrite');
-    const store = tx.objectStore('cookies');
+    try {
+        const db = await dbPromise;
+        const tx = db.transaction('cookies', 'readwrite');
+        const store = tx.objectStore('cookies');
 
-    for (const cookie of cookies) {
-        const domain = cookie.domain;
-        const name = cookie.name;
-        const trimmedDomain = domain[0] === '.' ? domain.substring(1) : domain;
-        const dbKey = `${trimmedDomain}_of_${name}`;
-        const storedData = cookie;
+        for (const [index, cookie] of cookies.entries()) {
+            try {
 
-        let existingDomain = await store.get(dbKey) || { key_name: dbKey, details: {} };
+                let usage = 'Essential'; // Default
 
-        existingDomain.details = storedData;
+                const domain = cookie.domain;
+                const name = cookie.name;
+                if (!domain) {
+                    usage = 'Unknown';
+                    console.error(`Skipping invalid domain of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
+                    console.error(cookie.value);
+                    continue; // Skip this cookie if it doesn't have a domain or name
+                } else if (!name) {
+                    usage = 'Unknown';
+                    console.error(`Skipping invalid name of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
+                    console.log(cookie)
+                    console.error(cookie.value);
+                    continue; // Skip this cookie if it doesn't have a domain or name
+                }
 
-        store.put(existingDomain);
+                const trimmedDomain = domain[0] === '.' ? domain.substring(1) : domain;
+                const dbKey = `${trimmedDomain}_of_${name}`;
+
+                // Create a new object for storage
+                const storedData = { ...cookie, trimmedDomain };
+
+                // Determine usage category
+                const convertedName = name.toLowerCase();
+                const convertedDomain = domain.toLowerCase();
+
+                if (convertedName.includes('ga') || convertedName.includes('utm') || convertedName.includes('analytics')) {
+                    usage = 'Analytics';
+                } else if (convertedDomain.includes('doubleclick') || convertedDomain.includes('ad')) {
+                    usage = 'Advertising';
+                } else if (convertedName.includes('pref') || convertedName.includes('settings') || convertedName.includes('lang')) {
+                    usage = 'Preferences';
+                }
+
+                storedData['usage'] = usage;
+
+                let existingDomain = await store.get(dbKey) || { key_name: dbKey, details: {} };
+
+                existingDomain.details = storedData;
+
+                await store.put(existingDomain);
+
+            } catch (cookieError) {
+                console.error(`Error processing cookie [${index}]:`, cookieError, cookie);
+            }
+        }
+
+        await tx.done;
+        console.log('All cookie data is stored in IndexedDB.');
+    } catch (error) {
+        console.error('Error storing cookie data in IndexedDB:', error);
     }
-
-    await tx.done;
-    console.log('All cookie data is stored in IndexedDB.');
 });
