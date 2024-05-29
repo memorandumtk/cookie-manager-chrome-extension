@@ -28,14 +28,14 @@ chrome.cookies.getAll({}, async (cookies) => {
                 const name = cookie.name;
                 if (!domain) {
                     usage = 'Unknown';
-                    console.error(`Skipping invalid domain of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
-                    console.error(cookie.value);
+                    // console.error(`Skipping invalid domain of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
+                    // console.error(cookie.value);
                     continue; // Skip this cookie if it doesn't have a domain or name
                 } else if (!name) {
                     usage = 'Unknown';
-                    console.error(`Skipping invalid name of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
-                    console.log(cookie)
-                    console.error(cookie.value);
+                    // console.error(`Skipping invalid name of cookie [${index}]:`, cookie.name , ' ', cookie.domain);
+                    // console.log(cookie)
+                    // console.error(cookie.value);
                     continue; // Skip this cookie if it doesn't have a domain or name
                 }
 
