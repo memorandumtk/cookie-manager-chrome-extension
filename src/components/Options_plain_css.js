@@ -178,7 +178,7 @@ const Options = () => {
         // This conditional rendering is used to show the modal when a cookie is selected.
         !selectedCookie ? (
             <div>
-                <h1 className={"text-4xl text-green-500 font-bold text-center mb-4"}>Options Page for Cookie Manager</h1>
+                <h1>Options Page for Cookie Manager</h1>
 
                 <label htmlFor="search-box">
                     Search:
