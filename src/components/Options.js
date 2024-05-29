@@ -3,7 +3,7 @@ import useCookies from '../hooks/UseCookiesCustomHook.js';
 import DateFilter from './DateFilter.js';
 import {openDB} from 'idb';
 import CookieDetailModal from './CookieDetailModal.js';
-import '../css/popup.css';
+import '../css/options.css';
 import GetAllCookies from '../utils/GetAllCookies.js';
 import ExportCookies from "../utils/ExportCookies";
 import ImportCookies from "../utils/ImportCookies";
@@ -175,155 +175,158 @@ const Options = () => {
     }
 
     return (
-        <div>
-            <h1>Options Page for Cookie Manager</h1>
-
-            <label htmlFor="search-box">
-                Search:
-                <input
-                    type="text"
-                    id="search-box"
-                    name="search-box"
-                    value={searchValue}
-                    onChange={handleSearchChange}
-                />
-            </label>
-            <br/>
-
-            <label htmlFor="grouping-criteria">
-                Group By:
-                <select id="grouping-criteria" name="grouping-criteria" value={groupingCriteria}
-                        onChange={handleGroupingChange}>
-                    <option value="domain">Domain</option>
-                    <option value="expirationDate">Expiration Date</option>
-                    <option value="session">Is It A Session Cookie?</option>
-                    <option value="usage">Usage</option>
-                </select>
-            </label>
-            <br/>
-
-            <DateFilter onDateChange={handleDateChange}/>
-            <br/>
-
-            <button onClick={handleRemoveAllCookies}>Remove All Cookies</button>
-            {
-                buckets.length > 0 && (
-                    <button onClick={handleRemoveSelectedCookies}>Remove Selected Cookie</button>
-                )
-            }
-
-            <br/>
-
+        // This conditional rendering is used to show the modal when a cookie is selected.
+        !selectedCookie ? (
             <div>
-                <button onClick={handleExportCookies}>Export Cookies</button>
-                <input type="file" accept=".json" onChange={(e) => handleImportCookies(e.target.files[0])}/>
-            </div>
+                <h1>Options Page for Cookie Manager</h1>
 
-            <p>Your total number of cookies: {filteredCookies.length}</p>
-            <br/>
+                <label htmlFor="search-box">
+                    Search:
+                    <input
+                        type="text"
+                        id="search-box"
+                        name="search-box"
+                        value={searchValue}
+                        onChange={handleSearchChange}
+                    />
+                </label>
+                <br/>
 
-            {Object.keys(groupedCookies).length > 0 ? (
+                <label htmlFor="grouping-criteria">
+                    Group By:
+                    <select id="grouping-criteria" name="grouping-criteria" value={groupingCriteria}
+                            onChange={handleGroupingChange}>
+                        <option value="domain">Domain</option>
+                        <option value="expirationDate">Expiration Date</option>
+                        <option value="session">Is It A Session Cookie?</option>
+                        <option value="usage">Usage</option>
+                    </select>
+                </label>
+                <br/>
+
+                <DateFilter onDateChange={handleDateChange}/>
+                <br/>
+
+                <button onClick={handleRemoveAllCookies}>Remove All Cookies</button>
+                {
+                    buckets.length > 0 && (
+                        <button onClick={handleRemoveSelectedCookies}>Remove Selected Cookie</button>
+                    )
+                }
+
+                <br/>
+
                 <div>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>{/*Making this header empty*/}</th>
-                            <th>Action</th>
-                            <th>
-                                Domain
-                                {sortKey.domain === 'asc'
-                                    ? <span className="arrow-down-domain"
-                                            onClick={() => sortCookies('domain')}></span>
-                                    : <span className="arrow-up-domain"
-                                            onClick={() => sortCookies('domain')}></span>
-                                }
-                            </th>
-                            <th>
-                                Name
-                                {sortKey.name === 'asc'
-                                    ? <span className="arrow-down-domain"
-                                            onClick={() => sortCookies('name')}></span>
-                                    : <span className="arrow-up-domain"
-                                            onClick={() => sortCookies('name')}></span>
-                                }
-                            </th>
-                            <th>
-                                Expiration Date
-                                {sortKey.expirationDate === 'asc'
-                                    ? <span className="arrow-down-domain"
-                                            onClick={() => sortCookies('expirationDate')}></span>
-                                    : <span className="arrow-up-domain"
-                                            onClick={() => sortCookies('expirationDate')}></span>
-                                }
-                            </th>
-                        </tr>
-                        </thead>
+                    <button onClick={handleExportCookies}>Export Cookies</button>
+                    <input type="file" accept=".json" onChange={(e) => handleImportCookies(e.target.files[0])}/>
+                </div>
 
-                        <tbody>
-                        {Object.entries(groupedCookies).map(([group, cookies], index) => (
-                            <React.Fragment key={group}>
-                                <tr>
-                                    <td colSpan="5">
-                                        <p>{group}</p>
-                                        <label htmlFor={`checkbox-${group}`}>
-                                            <input
-                                                name={`checkbox-${group}`}
-                                                className={`checkbox-${group}`}
-                                                id={`checkbox-${group}`}
-                                                type="checkbox"
-                                                onChange={(event) => handleCheckboxOfGroupingChange(event.target.checked, group)}
-                                            />
-                                        </label>
-                                    </td>
-                                </tr>
-                                {cookies.map((cookie) => (
-                                    <tr className={'row-of-cookie-data'} key={cookie.key_name}>
-                                        <td>
-                                            <label htmlFor={`checkbox-${cookie.key_name}`}>
+                <p>Your total number of cookies: {filteredCookies.length}</p>
+                <br/>
+
+                {Object.keys(groupedCookies).length > 0 ? (
+                    <div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>{/*Making this header empty*/}</th>
+                                <th>Action</th>
+                                <th>
+                                    Domain
+                                    {sortKey.domain === 'asc'
+                                        ? <span className="arrow-down-domain"
+                                                onClick={() => sortCookies('domain')}></span>
+                                        : <span className="arrow-up-domain"
+                                                onClick={() => sortCookies('domain')}></span>
+                                    }
+                                </th>
+                                <th>
+                                    Name
+                                    {sortKey.name === 'asc'
+                                        ? <span className="arrow-down-domain"
+                                                onClick={() => sortCookies('name')}></span>
+                                        : <span className="arrow-up-domain"
+                                                onClick={() => sortCookies('name')}></span>
+                                    }
+                                </th>
+                                <th>
+                                    Expiration Date
+                                    {sortKey.expirationDate === 'asc'
+                                        ? <span className="arrow-down-domain"
+                                                onClick={() => sortCookies('expirationDate')}></span>
+                                        : <span className="arrow-up-domain"
+                                                onClick={() => sortCookies('expirationDate')}></span>
+                                    }
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {Object.entries(groupedCookies).map(([group, cookies], index) => (
+                                <React.Fragment key={group}>
+                                    <tr>
+                                        <td colSpan="5">
+                                            <p>{group}</p>
+                                            <label htmlFor={`checkbox-${group}`}>
                                                 <input
-                                                    name={`checkbox-${cookie.key_name}`}
-                                                    className={`checkbox-${cookie.key_name}`}
-                                                    id={`checkbox-${cookie.key_name}`}
+                                                    name={`checkbox-${group}`}
+                                                    className={`checkbox-${group}`}
+                                                    id={`checkbox-${group}`}
                                                     type="checkbox"
-                                                    onChange={(event) => handleCheckboxChange(event.target.checked, cookie.key_name)}
+                                                    onChange={(event) => handleCheckboxOfGroupingChange(event.target.checked, group)}
                                                 />
                                             </label>
                                         </td>
-                                        <td>
-                                            <button onClick={(e) => {
-                                                e.preventDefault();
-                                                handleRowClick(cookie);
-                                            }}>Details
-                                            </button>
-                                            <button onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeCookie(cookie.key_name);
-                                            }}>Remove
-                                            </button>
-                                        </td>
-                                        <td>{HighlightText(cookie.details.domain, searchValue)}</td>
-                                        <td>{HighlightText(cookie.details.name, searchValue)}</td>
-                                        <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
                                     </tr>
-                                ))}
-                            </React.Fragment>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <p>No data matched your search criteria.</p>
-            )}
+                                    {cookies.map((cookie) => (
+                                        <tr className={'row-of-cookie-data'} key={cookie.key_name}>
+                                            <td>
+                                                <label htmlFor={`checkbox-${cookie.key_name}`}>
+                                                    <input
+                                                        name={`checkbox-${cookie.key_name}`}
+                                                        className={`checkbox-${cookie.key_name}`}
+                                                        id={`checkbox-${cookie.key_name}`}
+                                                        type="checkbox"
+                                                        onChange={(event) => handleCheckboxChange(event.target.checked, cookie.key_name)}
+                                                    />
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <button onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleRowClick(cookie);
+                                                }}>Details
+                                                </button>
+                                                <button onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeCookie(cookie.key_name);
+                                                }}>Remove
+                                                </button>
+                                            </td>
+                                            <td>{HighlightText(cookie.details.domain, searchValue)}</td>
+                                            <td>{HighlightText(cookie.details.name, searchValue)}</td>
+                                            <td>{cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000).toLocaleString() : 'Session'}</td>
+                                        </tr>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p>No data matched your search criteria.</p>
+                )}
 
-            {selectedCookie && (
-                <CookieDetailModal
-                    cookie={selectedCookie}
-                    onClose={closeModal}
-                    handleDetailChange={handleDetailChange}
-                />
-            )}
-        </div>
+            </div>
+        ) : (
+            // If a cookie is selected, show the modal.
+            <CookieDetailModal
+                cookie={selectedCookie}
+                onClose={closeModal}
+                handleDetailChange={handleDetailChange}
+            />
+        )
     );
-};
 
+};
 export default Options;
