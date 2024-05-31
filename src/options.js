@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Options from './components/Options';
+import Options from './components/Options.jsx';
 import './styles/tailwind.css';
 
 // This mounts the React component to the DOM element with id 'root'

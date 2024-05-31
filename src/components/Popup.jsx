@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import useCookies from '../hooks/UseCookiesCustomHook.js';
-import DateFilter from './DateFilter.js';
+import DateFilter from './parts/DateFilter.jsx';
 import {openDB} from 'idb';
 import '../css/popup.css';
 import GetAllCookies from '../utils/GetAllCookies.js';
