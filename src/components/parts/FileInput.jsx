@@ -1,4 +1,5 @@
 import React from "react";
+import {FaUpload} from "react-icons/fa";
 
 /**
  * Handle the import of cookies from a file
@@ -23,9 +24,10 @@ const FileInput = ({id, onFileChange, fileName}) => {
                 />
                 <label
                     htmlFor={id}
-                    className="cursor-pointer bg-blue-300 text-white py-2 px-4 rounded-md hover:bg-blue-400"
+                    className="cursor-pointer flex flex-row bg-blue-300 text-white py-2 px-4 rounded-md hover:bg-blue-400 items-center justify-center gap-2 transition"
                 >
-                    Import Cookies
+                    <FaUpload className="text-gray-300"/>
+                    Import
                 </label>
                 {fileName && (
                     <span className="ml-2">{fileName}</span>

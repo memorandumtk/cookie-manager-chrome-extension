@@ -20,8 +20,8 @@ const DateFilter = ({onDateChange}) => {
         <>
             <div className="flex flex-col gap-2">
                 <label htmlFor="search-box"
-                       className="block font-semibold text-lg text-gray-300">
-                    Start Date:
+                       className="block font-semibold text-gray-300">
+                    Expiration Date From:
                 </label>
                 <DatePicker
                     selected={startDate}
@@ -32,8 +32,8 @@ const DateFilter = ({onDateChange}) => {
 
             <div className="flex flex-col gap-2">
                 <label htmlFor="search-box"
-                       className="block font-semibold text-lg text-gray-300">
-                    End Date:
+                       className="block font-semibold text-gray-300">
+                    Expiration Date To:
                 </label>
                 <DatePicker
                     selected={endDate}

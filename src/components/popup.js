@@ -9,8 +9,7 @@ import ImportCookies from "../utils/ImportCookies";
 import removeAllCookies from "../utils/RemoveAllCookies";
 import RemoveSelectedCookies from "../utils/RemoveSelectedCookies";
 import FileInput from "./parts/FileInput";
-import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
-import CookieChart from './parts/CookieChart';
+import { FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch } from 'react-icons/fa';
 
 const Popup = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -21,11 +20,9 @@ const Popup = () => {
     const debounceTimerRef = useRef(null);
     const [dateRange, setDateRange] = useState({startDate: null, endDate: null});
     const [fileName, setFileName] = useState(null);
-    const [chartData, setChartData] = useState({});
 
     useEffect(() => {
         groupCookies(filteredCookies, groupingCriteria);
-        updateChartData(filteredCookies);
     }, [filteredCookies, groupingCriteria]);
 
     function groupCookies(cookies, criteria) {
@@ -38,16 +35,6 @@ const Popup = () => {
         console.log(grouped)
         setGroupedCookies(grouped);
     }
-
-    const updateChartData = (cookies) => {
-        const domainCounts = cookies.reduce((acc, cookie) => {
-            const cookieKey = cookie.details.usage;
-            if (!acc[cookieKey]) acc[cookieKey] = 0;
-            acc[cookieKey]++;
-            return acc;
-        }, {});
-        setChartData(domainCounts);
-    };
 
     const handleGroupingChange = (event) => {
         setGroupingCriteria(event.target.value);
@@ -118,9 +105,7 @@ const Popup = () => {
     };
 
     return (
-        <div
-            className="w-96 p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-gray-200 rounded-lg shadow-lg font-sans">
-
+        <div className="w-96 p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-gray-200 rounded-lg shadow-lg font-sans">
             <h1 className="text-2xl font-bold mb-4 text-center">Cookie Manager</h1>
 
             <div className="flex flex-col gap-4">
@@ -137,33 +122,33 @@ const Popup = () => {
                     />
                 </div>
 
-                <div className="flex flex-row gap-2 justify-center">
-                    <button onClick={handleRemoveAllCookies}
-                            className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
-                        <FaTrashAlt/>
+                <div className="flex flex-wrap gap-2 justify-between">
+                    <button onClick={handleRemoveAllCookies} className="flex items-center gap-2 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                        <FaTrashAlt />
                         Remove All
                     </button>
-
-                    <button onClick={handleExportCookies}
-                            className="flex items-center gap-2 bg-blue-300 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
-                        <FaDownload/>
+                    {buckets.length > 0 && (
+                        <button onClick={handleRemoveSelectedCookies} className="flex items-center gap-2 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                            <FaTrashAlt />
+                            Remove Selected
+                        </button>
+                    )}
+                    <button onClick={handleExportCookies} className="flex items-center gap-2 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
+                        <FaDownload />
                         Export
                     </button>
-                    <FileInput id="file_input" onFileChange={handleImportCookies} fileName={fileName}/>
+                    <div className="flex items-center gap-2">
+                        <FaUpload className="text-gray-300"/>
+                        <FileInput id="file_input" onFileChange={handleImportCookies} fileName={fileName}/>
+                    </div>
                 </div>
 
-                <p className="text-center text-base">Total cookies: <span
-                    className="font-bold">{filteredCookies.length}</span>
-                </p>
+                <p className="text-center">Total cookies: <span className="font-bold">{filteredCookies.length}</span></p>
 
-                <CookieChart data={chartData} />
-
-                <button onClick={openOptionsPage}
-                        className="flex items-center gap-2 bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition mx-auto">
-                    <FaCog/>
-                    See More
+                <button onClick={openOptionsPage} className="flex items-center gap-2 bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition mx-auto">
+                    <FaCog />
+                    Options
                 </button>
-
             </div>
         </div>
     );

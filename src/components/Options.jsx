@@ -13,6 +13,7 @@ import RemoveSelectedCookies from "../utils/RemoveSelectedCookies";
 import HighlightText from "../utils/HighlightText";
 import FileInput from "./parts/FileInput";
 import CheckboxForOneCookie from "./parts/CheckboxForOneCookie";
+import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
 
 const Options = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -189,8 +190,10 @@ const Options = () => {
     return (
         <>
             <div className="p-12 font-sans bg-slate-700 text-gray-200 text-base">
-                <h1 className="text-4xl font-bold text-center mb-6 text-white">Options Page for Cookie
-                    Manager</h1>
+                <p className="px-4 text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
+                    <span className="text-2xl">{filteredCookies.length}</span>
+                </p>
+
 
                 <div className="flex flex-col gap-4">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 items-center justify-center">
@@ -252,19 +255,14 @@ const Options = () => {
                                 Export Cookies
                             </button>
                         </div>
-                        <div className="p-2 flex-row flex gap-2 items-center justify-center">
+                        <div className="flex flex-row flex gap-2 items-center justify-center">
                             <FileInput id="file_input" onFileChange={handleImportCookies} fileName={fileName}/>
                         </div>
                     </div>
                 </div>
 
-                <p className="px-4 text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
-                    <span className="text-2xl">{filteredCookies.length}</span>
-                </p>
-
                 {Object.keys(groupedCookies).length > 0 ? (
                     <div className="overflow-auto">
-                        {/*<table className="w-full border-collapse rounded-sm mb-4">*/}
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead>
                             <tr className="p-2 font-bold border-b-2 border-gray-200">
