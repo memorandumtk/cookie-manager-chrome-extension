@@ -27,7 +27,7 @@ const Options = () => {
     const [groupingCriteria, setGroupingCriteria] = useState('domain');
     const debounceTimerRef = useRef(null);
     const [sortKey, setSortKey] = useState({domain: 'asc', name: null, expirationDate: null});
-    const [dateRange, setDateRange] = useState({startDate: null, endDate: null});
+    const [dateRange, setDateRange] = useState({startDate: new Date(), endDate: null});
     const [fileName, setFileName] = useState(null);
 
     useEffect(() => {
@@ -47,11 +47,6 @@ const Options = () => {
 
     const handleGroupingChange = (event) => {
         setGroupingCriteria(event.target.value);
-    };
-
-    const handleDateChange = (startDate, endDate) => {
-        setDateRange({startDate, endDate});
-        performSearch(searchValue, {startDate, endDate});
     };
 
     const handleRemoveSelectedCookies = async () => {
@@ -107,6 +102,16 @@ const Options = () => {
         }, 300);
     };
 
+    const handleDateChange = (startDate, endDate) => {
+        setDateRange({startDate, endDate});
+        performSearch(searchValue, {startDate, endDate});
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        performSearch(searchValue, dateRange);
+    }
+
     const performSearch = (value, dateRange) => {
         let filtered = filteredCookies;
         if (value) {
@@ -114,7 +119,8 @@ const Options = () => {
                 cookie.details.domain.includes(value) || cookie.details.name.includes(value)
             );
         }
-        if (dateRange.startDate || dateRange.endDate) {
+        if (dateRange.endDate) {
+            dateRange.startDate = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
             filtered = filtered.filter(cookie => {
                 const expirationDate = cookie.details.expirationDate ? new Date(cookie.details.expirationDate * 1000) : null;
                 return (!dateRange.startDate || (expirationDate && expirationDate >= dateRange.startDate)) &&
@@ -184,95 +190,102 @@ const Options = () => {
 
     return (
         <Background className={`p-12 font-sans text-gray-200 text-base`}>
-            <div className={selectedCookie ? "bg-opacity-50" : ""}>
-                <div className="flex flex-row items-center px-6 pb-4 gap-6">
-                    <p className="text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
-                        <span className="text-2xl">{
-                            cookies.length
-                        }</span>
-                    </p>
-
-                    {(cookies.length !== filteredCookies.length && searchValue) && (
-                        <p className="text-slate-200 text-xl font-bold">Filtered cookies: {' '}
-                            <span className="text-2xl">{filteredCookies.length}</span>
+            <div className={selectedCookie ? "relative bg-opacity-50" : "relative"}>
+                <Background className="sticky top-0 left-0 w-full z-50 cookie-stats">
+                    <div className="flex flex-row items-center px-6 pb-4 gap-6">
+                        <p className="text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
+                            <span className="text-2xl">{
+                                cookies.length
+                            }</span>
                         </p>
-                    )}
-                </div>
 
-                <div className="flex flex-col gap-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 items-center justify-center">
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="search-box"
-                                   className="block font-semibold text-gray-300">Search:</label>
-                            <input
-                                type="text"
-                                id="search-box"
-                                name="search-box"
-                                value={searchValue}
-                                placeholder={"Enter a word may be in domain or name of a cookie..."}
-                                onChange={handleSearchChange}
-                                className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
-                            />
-
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="search-box"
-                                   className="block font-semibold text-gray-300">Group By:</label>
-                            <select
-                                id="grouping-criteria"
-                                name="grouping-criteria"
-                                value={groupingCriteria}
-                                onChange={handleGroupingChange}
-                                className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
-                            >
-                                <option value="domain">Domain</option>
-                                <option value="expirationDate">Expiration Date</option>
-                                <option value="session">Is It A Session Cookie?</option>
-                                <option value="usage">Usage</option>
-                            </select>
-                        </div>
-
-                        <div className="flex flex-row gap-4 items-center">
-                            <DateFilter onDateChange={handleDateChange}/>
-                        </div>
-
+                        {(cookies.length !== filteredCookies.length && searchValue) && (
+                            <p className="text-slate-200 text-xl font-bold">Filtered cookies: {' '}
+                                <span className="text-2xl">{filteredCookies.length}</span>
+                            </p>
+                        )}
                     </div>
 
-                    <div className="flex flex-wrap gap-4 p-2 justify-center items-center">
-                        <div className="flex flex-row gap-4">
-                            <button onClick={handleRemoveAllCookies}
-                                    className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
-                                <FaTrashAlt/>
-                                Remove All
-                            </button>
-                            {buckets.length > 0 && (
-                                <button onClick={handleRemoveSelectedCookies}
+                    <div className="flex flex-col gap-4 items-center">
+                        <div className="grid grid-cols-2 gap-8 items-center justify-center">
+                            <form className="flex flex-col gap-2"
+                                  onSubmit={handleSearchSubmit}>
+                                <div className="flex flex-row gap-2">
+                                    <p>Search For:</p>
+                                    <label htmlFor="search-box"
+                                           className="block font-semibold text-gray-300">
+                                        <input
+                                            type="text"
+                                            id="search-box"
+                                            name="search-box"
+                                            value={searchValue}
+                                            placeholder={"Enter a word may be in domain or name of a cookie..."}
+                                            onChange={handleSearchChange}
+                                            className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
+                                        />
+                                    </label>
+                                </div>
+
+                                <div className="flex flex-row gap-4 items-center">
+                                    <DateFilter onDateChange={handleDateChange}/>
+                                </div>
+
+                            </form>
+
+                            <div className="flex flex-col gap-2">
+                                <label htmlFor="search-box"
+                                       className="block font-semibold text-gray-300">Group By:</label>
+                                <select
+                                    id="grouping-criteria"
+                                    name="grouping-criteria"
+                                    value={groupingCriteria}
+                                    onChange={handleGroupingChange}
+                                    className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
+                                >
+                                    <option value="domain">Domain</option>
+                                    <option value="expirationDate">Expiration Date</option>
+                                    <option value="session">Is It A Session Cookie?</option>
+                                    <option value="usage">Usage</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div className="flex flex-wrap gap-4 p-2 justify-center items-center">
+                            <div className="flex flex-row gap-4">
+                                <button onClick={handleRemoveAllCookies}
                                         className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
-                                    <FaRegTrashCan/>
-                                    Remove Selected
+                                    <FaTrashAlt/>
+                                    Remove All
                                 </button>
-                            )}
-                        </div>
+                                {buckets.length > 0 && (
+                                    <button onClick={handleRemoveSelectedCookies}
+                                            className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                                        <FaRegTrashCan/>
+                                        Remove Selected
+                                    </button>
+                                )}
+                            </div>
 
-                        <div>
-                            <button onClick={handleExportCookies}
-                                    className="flex gap-2 items-center bg-blue-300 hover:bg-blue-600 focus:bg-blue-600
+                            <div>
+                                <button onClick={handleExportCookies}
+                                        className="flex gap-2 items-center bg-blue-300 hover:bg-blue-600 focus:bg-blue-600
                                     text-white py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                                <FaDownload/>
-                                Export
-                            </button>
-                        </div>
-                        <div className="flex flex-row flex gap-2 items-center justify-center">
-                            <FileInput id="file_input" onFileChange={handleImportCookies} fileName={fileName}/>
+                                    <FaDownload/>
+                                    Export
+                                </button>
+                            </div>
+                            <div className="flex flex-row flex gap-2 items-center justify-center">
+                                <FileInput id="file_input" onFileChange={handleImportCookies} fileName={fileName}/>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Background>
 
                 {Object.keys(groupedCookies).length > 0 ? (
-                    <div className="overflow-auto">
+                    <div className="overflow-auto relative">
                         <table className="min-w-full divide-y divide-gray-200">
-                            <thead>
+                            <thead className="table-header">
                             <tr className="p-2 font-bold border-b-2 border-gray-200">
                                 <th className="p-2">{/* Empty Header */}</th>
                                 <th className="p-2">{/* Empty Header */}</th>
@@ -306,7 +319,7 @@ const Options = () => {
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="">
                             {Object.entries(groupedCookies).map(([group, cookies]) => (
                                 <React.Fragment key={group}>
                                     <tr>

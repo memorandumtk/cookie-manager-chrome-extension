@@ -18,28 +18,32 @@ const DateFilter = ({onDateChange}) => {
 
     return (
         <>
-            <div className="flex flex-col gap-2">
-                <label htmlFor="search-box"
+            <div className="flex flex-row gap-2">
+                <label htmlFor="search-start-date"
                        className="block font-semibold text-gray-300">
-                    Expiration Date From:
+                    <DatePicker
+                        id={"search-start-date"}
+                        name={"search-start-date"}
+                        selected={startDate}
+                        onChange={handleStartDateChange}
+                        placeholderText="Expiration Date From(optional):"
+                        className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
+                    />
                 </label>
-                <DatePicker
-                    selected={startDate}
-                    onChange={handleStartDateChange}
-                    className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
-                />
             </div>
 
-            <div className="flex flex-col gap-2">
-                <label htmlFor="search-box"
+            <div className="flex flex-row gap-2">
+                <label htmlFor="search-end-date"
                        className="block font-semibold text-gray-300">
-                    Expiration Date To:
+                    <DatePicker
+                        id={"search-end-date"}
+                        name={"search-end-date"}
+                        selected={endDate}
+                        onChange={handleEndDateChange}
+                        placeholderText="Expiration Date To:"
+                        className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
+                    />
                 </label>
-                <DatePicker
-                    selected={endDate}
-                    onChange={handleEndDateChange}
-                    className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
-                />
             </div>
         </>
     );
