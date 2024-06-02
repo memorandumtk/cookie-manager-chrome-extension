@@ -26,7 +26,7 @@ const FileInput = ({id, onFileChange, fileName}) => {
                     htmlFor={id}
                     className="cursor-pointer flex flex-row bg-blue-300 text-white py-2 px-4 rounded-md hover:bg-blue-400 items-center justify-center gap-2 transition"
                 >
-                    <FaUpload className="text-gray-300"/>
+                    <FaUpload/>
                     Import
                 </label>
                 {fileName && (

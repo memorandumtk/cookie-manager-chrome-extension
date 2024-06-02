@@ -1,5 +1,6 @@
 import React from 'react';
 import CookieDetail from "./CookieDetail";
+import Background from "./Background";
 
 /**
  * Component for a single cookie detail.
@@ -16,14 +17,15 @@ const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
     const arrayOfDetails = Object.entries(cookie.details);
 
     return (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex flex-col items-center justify-center p-16 z-50">
-            <div className="bg-slate-700 text-gray-200 p-8 rounded-lg shadow-lg overflow-auto">
+        <div className="fixed inset-0 flex flex-col items-center justify-center p-16 z-50">
+            <Background className="text-gray-200 rounded-lg shadow-lg overflow-auto">
                 <div className="flex flex-row justify-center gap-8 items-center border-b">
                     <h2 className="text-base font-bold">Details of{'  '}<span
                         className="text-2xl">{cookie.details.name}</span>{'  '}of {'  '}<span
                         className="text-2xl">{cookie.details.domain}</span></h2>
-                    <span className="text-xl font-bold cursor-pointer hover:font-extrabold focus:font-extrabold transition"
-                          onClick={onClose}>&times;</span>
+                    <span
+                        className="text-xl font-bold cursor-pointer hover:font-extrabold focus:font-extrabold transition"
+                        onClick={onClose}>&times;</span>
                 </div>
 
                 <div>
@@ -41,9 +43,10 @@ const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
                     </ul>
                 </div>
 
-            </div>
+            </Background>
         </div>
-    );
+    )
+        ;
 };
 
 export default CookieDetailModal;

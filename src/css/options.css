@@ -1,3 +1,7 @@
 /* src/css/options.css */
 
 @import "react-datepicker/dist/react-datepicker.css";
+
+.bg-opacity-50 {
+    opacity: 0.5;
+}

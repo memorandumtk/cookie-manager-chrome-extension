@@ -11,6 +11,7 @@ import RemoveSelectedCookies from "../utils/RemoveSelectedCookies";
 import FileInput from "./parts/FileInput";
 import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
 import CookieChart from './parts/CookieChart';
+import Background from "./parts/Background";
 
 const Popup = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -118,8 +119,8 @@ const Popup = () => {
     };
 
     return (
-        <div
-            className="w-96 p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-gray-200 rounded-lg shadow-lg font-sans">
+        <Background
+            className="w-96 text-gray-200 font-sans text-white">
 
             <h1 className="text-2xl font-bold mb-4 text-center">Cookie Manager</h1>
 
@@ -156,7 +157,7 @@ const Popup = () => {
                     className="font-bold">{filteredCookies.length}</span>
                 </p>
 
-                <CookieChart data={chartData} />
+                <CookieChart data={chartData}/>
 
                 <button onClick={openOptionsPage}
                         className="flex items-center gap-2 bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition mx-auto">
@@ -165,7 +166,7 @@ const Popup = () => {
                 </button>
 
             </div>
-        </div>
+        </Background>
     );
 };
 

@@ -16,6 +16,7 @@ import CheckboxForOneCookie from "./parts/CheckboxForOneCookie";
 import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
 import {FaRegTrashCan} from "react-icons/fa6";
 import RemoveCookie from "../utils/RemoveCookie";
+import Background from "./parts/Background";
 
 const Options = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -47,7 +48,6 @@ const Options = () => {
     const handleGroupingChange = (event) => {
         setGroupingCriteria(event.target.value);
     };
-
 
     const handleDateChange = (startDate, endDate) => {
         setDateRange({startDate, endDate});
@@ -108,7 +108,7 @@ const Options = () => {
     };
 
     const performSearch = (value, dateRange) => {
-        let filtered = cookies;
+        let filtered = filteredCookies;
         if (value) {
             filtered = cookies.filter(cookie =>
                 cookie.details.domain.includes(value) || cookie.details.name.includes(value)
@@ -183,12 +183,12 @@ const Options = () => {
     }
 
     return (
-        <>
-            <div className="p-12 font-sans bg-slate-700 text-gray-200 text-base">
+        <Background className={`p-12 font-sans text-gray-200 text-base`}>
+            <div className={selectedCookie ? "bg-opacity-50" : ""}>
                 <div className="flex flex-row items-center px-6 pb-4 gap-6">
                     <p className="text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
                         <span className="text-2xl">{
-                            cookies.length !== filteredCookies.length ? filteredCookies.length : cookies.length
+                            cookies.length
                         }</span>
                     </p>
 
@@ -367,7 +367,7 @@ const Options = () => {
                     onDetailChange={handleDetailChange}
                 />
             )}
-        </>
+        </Background>
     )
 };
 export default Options;
