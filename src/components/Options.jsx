@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import useCookies from '../hooks/UseCookiesCustomHook.js';
+import useCookies from "../hooks/useCookies";
 import CookieDetailModal from './parts/CookieDetailModal.jsx';
 import DateFilter from './parts/DateFilter.jsx';
 import Checkbox from "./parts/Checkbox.jsx";
@@ -14,6 +14,8 @@ import HighlightText from "../utils/HighlightText";
 import FileInput from "./parts/FileInput";
 import CheckboxForOneCookie from "./parts/CheckboxForOneCookie";
 import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
+import {FaRegTrashCan} from "react-icons/fa6";
+import RemoveCookie from "../utils/RemoveCookie";
 
 const Options = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -52,13 +54,6 @@ const Options = () => {
         performSearch(searchValue, {startDate, endDate});
     };
 
-    const removeCookie = async (key_name) => {
-        const db = await openDB('cookie-manager', 1);
-        await db.delete('cookies', key_name);
-        const cookiesData = await GetAllCookies(db);
-        setFilteredCookies(cookiesData);
-    };
-
     const handleRemoveSelectedCookies = async () => {
         await RemoveSelectedCookies(buckets, setBuckets, filteredCookies, setFilteredCookies);
     }
@@ -68,12 +63,12 @@ const Options = () => {
         checkbox.checked = !checkbox.checked;
     }
 
-    const handleCheckboxChange = (isChecked, cookieKeyName) => {
-        console.log('This cookie is checked: ', cookieKeyName);
+    const handleCheckboxChange = (isChecked, cookie) => {
+        console.log('This cookie is checked: ', cookie);
         if (isChecked) {
-            setBuckets((prevBuckets) => [...prevBuckets, cookieKeyName]);
+            setBuckets((prevBuckets) => [...prevBuckets, cookie]);
         } else {
-            setBuckets((prevBuckets) => prevBuckets.filter((bucket) => bucket !== cookieKeyName));
+            setBuckets((prevBuckets) => prevBuckets.filter((bucket) => bucket !== cookie));
         }
     }
 
@@ -88,12 +83,12 @@ const Options = () => {
         console.log(buckets)
         if (isChecked) {
             cookies.map((cookie) => {
-                handleCheckboxChange(true, cookie.key_name)
+                handleCheckboxChange(true, cookie)
                 return toggleCheckbox(cookie.key_name)
             });
         } else {
             cookies.map((cookie) => {
-                handleCheckboxChange(false, cookie.key_name)
+                handleCheckboxChange(false, cookie)
                 return toggleCheckbox(cookie.key_name)
             });
         }
@@ -190,16 +185,25 @@ const Options = () => {
     return (
         <>
             <div className="p-12 font-sans bg-slate-700 text-gray-200 text-base">
-                <p className="px-4 text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
-                    <span className="text-2xl">{filteredCookies.length}</span>
-                </p>
+                <div className="flex flex-row items-center px-6 pb-4 gap-6">
+                    <p className="text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
+                        <span className="text-2xl">{
+                            cookies.length !== filteredCookies.length ? filteredCookies.length : cookies.length
+                        }</span>
+                    </p>
 
+                    {(cookies.length !== filteredCookies.length && searchValue) && (
+                        <p className="text-slate-200 text-xl font-bold">Filtered cookies: {' '}
+                            <span className="text-2xl">{filteredCookies.length}</span>
+                        </p>
+                    )}
+                </div>
 
                 <div className="flex flex-col gap-4">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 items-center justify-center">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="search-box"
-                                   className="block font-semibold text-lg text-gray-300">Search:</label>
+                                   className="block font-semibold text-gray-300">Search:</label>
                             <input
                                 type="text"
                                 id="search-box"
@@ -214,7 +218,7 @@ const Options = () => {
 
                         <div className="flex flex-col gap-2">
                             <label htmlFor="search-box"
-                                   className="block font-semibold text-lg text-gray-300">Group By:</label>
+                                   className="block font-semibold text-gray-300">Group By:</label>
                             <select
                                 id="grouping-criteria"
                                 name="grouping-criteria"
@@ -238,21 +242,25 @@ const Options = () => {
                     <div className="flex flex-wrap gap-4 p-2 justify-center items-center">
                         <div className="flex flex-row gap-4">
                             <button onClick={handleRemoveAllCookies}
-                                    className="bg-red-400 text-white py-2 px-4 rounded-md">
-                                Remove All Cookies
+                                    className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                                <FaTrashAlt/>
+                                Remove All
                             </button>
                             {buckets.length > 0 && (
                                 <button onClick={handleRemoveSelectedCookies}
-                                        className="bg-red-400 text-white py-2 px-4 rounded-md">Remove Selected
-                                    Cookies</button>
+                                        className="flex items-center gap-2 bg-red-300 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+                                    <FaRegTrashCan/>
+                                    Remove Selected
+                                </button>
                             )}
                         </div>
 
                         <div>
                             <button onClick={handleExportCookies}
-                                    className="bg-blue-200 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 text-white py-2 px-4 rounded-md transition duration-150 ease-in-out"
-                            >
-                                Export Cookies
+                                    className="flex gap-2 items-center bg-blue-300 hover:bg-blue-600 focus:bg-blue-600
+                                    text-white py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                                <FaDownload/>
+                                Export
                             </button>
                         </div>
                         <div className="flex flex-row flex gap-2 items-center justify-center">
@@ -268,7 +276,7 @@ const Options = () => {
                             <tr className="p-2 font-bold border-b-2 border-gray-200">
                                 <th className="p-2">{/* Empty Header */}</th>
                                 <th className="p-2">{/* Empty Header */}</th>
-                                <th className="p-2 uppercase tracking-wider">Action</th>
+                                <th className="p-2">{/* Empty Header */}</th>
                                 <th className="p-2 cursor-pointer uppercase tracking-wider hover:bg-gray-100 hover:text-slate-700"
                                     onClick={() => sortCookies('domain')}>
                                     Domain
@@ -322,22 +330,20 @@ const Options = () => {
                                             </td>
                                             <td className="p-2">
                                                 <CheckboxForOneCookie
-                                                    keyName={cookie.key_name}
+                                                    cookie={cookie}
                                                     id={`checkbox-${cookie.key_name}`}
-                                                    label={''}
                                                     onChange={handleCheckboxChange}
-                                                    disabled={false}
                                                 />
                                             </td>
                                             <td className="p-2">
                                                 <button
-                                                    onClick={(event) => {
+                                                    onClick={async (event) => {
                                                         event.stopPropagation();
-                                                        removeCookie(cookie.key_name);
+                                                        await RemoveCookie(cookie, setFilteredCookies);
                                                     }}
                                                     className="bg-red-400 text-white py-1 px-2 rounded-md"
                                                 >
-                                                    Remove
+                                                    <FaTrashAlt/>
                                                 </button>
                                             </td>
                                             <td className="p-2">{HighlightText(cookie.details.domain, searchValue)}</td>
