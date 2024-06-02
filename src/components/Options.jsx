@@ -50,7 +50,7 @@ const Options = () => {
     };
 
     const handleRemoveSelectedCookies = async () => {
-        await RemoveSelectedCookies(buckets, setBuckets, filteredCookies, setFilteredCookies);
+        await RemoveSelectedCookies(buckets, setBuckets, setFilteredCookies);
     }
 
     const toggleCheckbox = (cookieKeyName) => {

@@ -1,5 +1,6 @@
 import {openDB} from "idb";
 import GetAllCookies from "./GetAllCookies";
+import useCookies from "../hooks/useCookies";
 
 /**
  * Remove a cookie from the IndexedDB and the browser(chrome.cookie).
@@ -25,7 +26,6 @@ const RemoveCookie = async (cookie, setFilteredCookies) => {
     const db = await openDB('cookie-manager', 1);
     await db.delete('cookies', cookie.key_name);
     const cookiesData = await GetAllCookies(db);
-
 
     setFilteredCookies(cookiesData);
 }

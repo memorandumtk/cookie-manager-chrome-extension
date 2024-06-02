@@ -10,16 +10,19 @@ const useCookies = () => {
     const [filteredCookies, setFilteredCookies] = useState([]);
 
     useEffect(() => {
+
         const fetchData = async () => {
             const cookiesData = await GetAllCookies();
             setCookies(cookiesData);
             setFilteredCookies(cookiesData);
         };
 
+        console.log("UseCookiesCustomHook.js's UseCookies() called");
+
         fetchData();
     }, []);
 
-    return { cookies, filteredCookies, setFilteredCookies };
+    return { cookies, setCookies, filteredCookies, setFilteredCookies };
 };
 
 export default useCookies;
