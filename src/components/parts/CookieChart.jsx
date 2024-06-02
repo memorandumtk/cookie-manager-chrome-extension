@@ -32,7 +32,17 @@ const CookieChart = ({ data, cookieKey }) => {
         ],
     };
 
-    return <Doughnut data={chartData} />;
+    const chartOptions = {
+        plugins: {
+            legend: {
+                labels: {
+                    color: 'white', // Change this to your desired color
+                },
+            },
+        },
+    };
+
+    return <Doughnut data={chartData} options={chartOptions} />;
 };
 
 export default CookieChart;

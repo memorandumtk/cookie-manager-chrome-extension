@@ -18,7 +18,7 @@ const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
 
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center p-16 z-50">
-            <Background className="text-gray-200 rounded-lg shadow-lg overflow-auto">
+            <Background className="text-gray-200 rounded-[32px] border-1 border-blue-200 shadow-lg shadow-blue-200 overflow-auto">
                 <div className="flex flex-row justify-center gap-8 items-center border-b">
                     <h2 className="text-base font-bold">Details of{'  '}<span
                         className="text-2xl">{cookie.details.name}</span>{'  '}of {'  '}<span
