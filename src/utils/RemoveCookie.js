@@ -28,6 +28,7 @@ const RemoveCookie = async (cookie, setFilteredCookies) => {
     const cookiesData = await GetAllCookies(db);
 
     setFilteredCookies(cookiesData);
+
 }
 
 export default RemoveCookie;

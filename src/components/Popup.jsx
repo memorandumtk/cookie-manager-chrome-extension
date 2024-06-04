@@ -14,31 +14,15 @@ import CookieChart from './parts/CookieChart';
 import Background from "./parts/Background";
 
 const Popup = () => {
-    const {cookies, filteredCookies, setFilteredCookies} = useCookies();
-    const [buckets, setBuckets] = useState([]);
+    const {cookies, setCookies, filteredCookies, setFilteredCookies} = useCookies();
     const [searchValue, setSearchValue] = useState('');
-    const [groupedCookies, setGroupedCookies] = useState({});
-    const [groupingCriteria, setGroupingCriteria] = useState('domain');
     const debounceTimerRef = useRef(null);
-    const [dateRange, setDateRange] = useState({startDate: null, endDate: null});
     const [fileName, setFileName] = useState(null);
     const [chartData, setChartData] = useState({});
 
     useEffect(() => {
-        groupCookies(filteredCookies, groupingCriteria);
         updateChartData(filteredCookies);
-    }, [filteredCookies, groupingCriteria]);
-
-    function groupCookies(cookies, criteria) {
-        const grouped = cookies.reduce((acc, cookie) => {
-            const key = cookie.details[criteria] !== null ? cookie.details[criteria] : 'undefined';
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(cookie);
-            return acc;
-        }, {});
-        console.log(grouped)
-        setGroupedCookies(grouped);
-    }
+    }, [filteredCookies]);
 
     const updateChartData = (cookies) => {
         const domainCounts = cookies.reduce((acc, cookie) => {
@@ -50,19 +34,6 @@ const Popup = () => {
         setChartData(domainCounts);
     };
 
-    const handleGroupingChange = (event) => {
-        setGroupingCriteria(event.target.value);
-    };
-
-    const handleDateChange = (startDate, endDate) => {
-        setDateRange({startDate, endDate});
-        performSearch(searchValue, {startDate, endDate});
-    };
-
-    const handleRemoveSelectedCookies = async () => {
-        await RemoveSelectedCookies(buckets, setBuckets, filteredCookies, setFilteredCookies);
-    }
-
     const handleSearchChange = (event) => {
         const value = event.target.value;
         setSearchValue(value);
@@ -72,7 +43,7 @@ const Popup = () => {
         }
 
         debounceTimerRef.current = setTimeout(() => {
-            performSearch(value, dateRange);
+            performSearch(value, null);
         }, 300);
     };
 

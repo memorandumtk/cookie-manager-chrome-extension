@@ -28,10 +28,7 @@ chrome.cookies.getAll({}, async (cookies) => {
 
                 const domain = cookie.domain;
                 const name = cookie.name;
-                if (!domain) {
-                    usage = 'Unknown';
-                    continue; // Skip this cookie if it doesn't have a domain or name
-                } else if (!name) {
+                if (!domain || !name) {
                     usage = 'Unknown';
                     continue; // Skip this cookie if it doesn't have a domain or name
                 }

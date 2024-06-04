@@ -17,6 +17,7 @@ import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa'
 import {FaRegTrashCan} from "react-icons/fa6";
 import RemoveCookie from "../utils/RemoveCookie";
 import Background from "./parts/Background";
+import DetailChange from "../utils/DetailChange";
 
 const Options = () => {
     const {cookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -26,9 +27,9 @@ const Options = () => {
     const [groupedCookies, setGroupedCookies] = useState({});
     const [groupingCriteria, setGroupingCriteria] = useState('domain');
     const debounceTimerRef = useRef(null);
-    const [sortKey, setSortKey] = useState({domain: 'asc', name: null, expirationDate: null});
     const [dateRange, setDateRange] = useState({startDate: new Date(), endDate: null});
     const [fileName, setFileName] = useState(null);
+    const [sortKey, setSortKey] = useState({domain: 'asc', name: null, expirationDate: null});
 
     useEffect(() => {
         groupCookies(filteredCookies, groupingCriteria);
@@ -140,19 +141,7 @@ const Options = () => {
     };
 
     const handleDetailChange = async (name, value) => {
-        const updatedCookie = {...selectedCookie, details: {...selectedCookie.details, [name]: value}};
-        setSelectedCookie(updatedCookie);
-
-        console.log('updated: ', updatedCookie);
-        const db = await openDB('cookie-manager', 1);
-        const tx = db.transaction('cookies', 'readwrite');
-        const store = tx.objectStore('cookies');
-
-        await store.put(updatedCookie); // Corrected line: no key parameter
-
-        await tx.done;
-        const cookiesData = await GetAllCookies(db);
-        setFilteredCookies(cookiesData);
+        await DetailChange(name, value, selectedCookie, setSelectedCookie, setFilteredCookies);
     };
 
     const handleRemoveAllCookies = async () => {
