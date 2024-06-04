@@ -34,6 +34,7 @@ const DateFilter = ({onDateChange}) => {
                         onChange={handleStartDateChange}
                         placeholderText="Expiration Date From(optional):"
                         className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
+                        title={"Search for start date of the cookie expiration date (optional)"}
                     />
                 </label>
             </div>
@@ -48,6 +49,7 @@ const DateFilter = ({onDateChange}) => {
                         onChange={handleEndDateChange}
                         placeholderText="Expiration Date To:"
                         className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-blue-700 focus:ring focus:ring-blue-500 focus:ring-opacity-50 hover:border-blue-700"
+                        title={"Search for end date of the cookie expiration date"}
                     />
                 </label>
             </div>

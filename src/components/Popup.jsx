@@ -12,6 +12,7 @@ import FileInput from "./parts/FileInput";
 import {FaTrashAlt, FaUpload, FaDownload, FaCog, FaSearch} from 'react-icons/fa';
 import CookieChart from './parts/CookieChart';
 import Background from "./parts/Background";
+import { MdOutlineReadMore } from "react-icons/md";
 
 const Popup = () => {
     const {cookies, setCookies, filteredCookies, setFilteredCookies} = useCookies();
@@ -91,7 +92,7 @@ const Popup = () => {
 
     return (
         <Background
-            className="w-96 text-gray-200 font-sans text-white">
+            className="w-96 text-gray-200 font-sans text-white min-h-screen">
 
             <h1 className="text-2xl font-bold mb-4 text-center">Cookie Manager</h1>
 
@@ -132,7 +133,7 @@ const Popup = () => {
 
                 <button onClick={openOptionsPage}
                         className="flex items-center gap-2 bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition mx-auto">
-                    <FaCog/>
+                    <MdOutlineReadMore />
                     See More
                 </button>
 

@@ -8,11 +8,10 @@ import RemoveCookie from "./RemoveCookie";
  * @returns {Promise<void>}
  * @constructor
  */
-const RemoveAllCookies = async () => {
-    const {cookies, filteredCookies, setFilteredCookies} = useCookies();
+const RemoveAllCookies = async (cookies, setCookies, setFilteredCookies) => {
 
     cookies.map(async (cookie) => {
-        await RemoveCookie(cookie, setFilteredCookies);
+        await RemoveCookie(cookie, setCookies, setFilteredCookies);
     })
 
     console.log('All cookies will be removed.')

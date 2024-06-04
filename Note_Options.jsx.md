@@ -1,24 +1,24 @@
 # Options.jsx
 
 ### State variables
-|      Name       |  Type   | Description                                                                                            |
-|:---------------:|:-------:|--------------------------------------------------------------------------------------------------------|
-|     cookies     |  Array  | An array of cookie objects.                                                                            |
-| filteredCookies |  Array  | An array of cookie objects that match the search query.                                                |
-|     buckets     |  Array  | An array of cookie objects selected at group buttons or each cookie's button.                          |
-|   searchValue   | String  | The search string entered to the search bar.                                                           |
-|  groupCookies   | Object  | An object that contains the cookies grouped by the group buttons. * needed to check later              |
-|  groupCriteria  | String | A criteria used to group cookies and will be selected by selecte input.                                |
-|    dateRange    | Oject  | An object that contains the start and end date of the date range to be used to specify expirationData. |
-| fileName | String  | The name of the file to be downloaded.                                                                 |
-| sortKey | String | A key used to sort the cookies of domain, name, and expirationDate properties.                         |
+|      Name       |  Type   | Description                                                                    | Default Value     | 
+|:---------------:|:-------:|--------------------------------------------------------------------------------| :---: |
+|     cookies     |  Array  | An array of cookie objects.                                                    | [] (useCookies hook) |
+| filteredCookies |  Array  | An array of cookie objects that match the search query.                        | [] (useCookies hook) |
+|   searchValue   | String  | The search string entered to the search bar.                                   |           ""           |
+| fileName | String  | The name of the file to be downloaded.                                         | null |
+|     buckets     |  Array  | An array of cookie objects selected at group buttons or each cookie's button.  | [] |
+|  groupCookies   | Object  | An object that contains the cookies grouped by the group buttons. * needed to check later | {} |
+|  groupCriteria  | String | A criteria used to group cookies and will be selected by selecte input.  | "domain" |
+|    dateRange    | Oject  | An object that contains the start and end date of the date range to be used to specify expirationData. | {startDate: new Date(), endDate: null} |
+| sortKey | String | A key used to sort the cookies of domain, name, and expirationDate properties. |{domain: 'asc', name: null, expirationDate: null} |
 
 ---
 
 ### Ref Value
 | Name |                      Description                       |
 | :---: |:------------------------------------------------------:|
-| debounceTimerRef | A reference to the debounce timer for cookie searching |
+| debounceTimerRef | A reference to the debounce timer for cookie searching | null |
 
 ---
 
@@ -43,6 +43,7 @@
 - [ ] Table header
   - This will display the table header columns with the domain, name, expiration date.
   - Each values can be sorted by clicking the column header.
+  - Those are sorted by `domain` ordered by ***asc*** by the default.
   - When the column is clicked, the `sortCookies` function is called and cookie data will be sorted based on `filteredCookies` array after that, `sortKey` value will be set with a value of clicked header.
 - [ ] Table body
   - This will display the cookie data in the table body.
@@ -56,6 +57,7 @@
 - This will be displayed when the `selectedCookie` has truthy value.
 - In the modal, all cookie data is appeared. The `value` and `expirationDate` properties can be edited with input fields. To do that, the `handleDetailChange` function is called and the cookie data will be updated.
 - **Although it is not recommended to change a value of the cookie unless you are sure what you are doing.** As my experience, I couldn't log in to chatgpt website when I changed the value of the cookie: .1rx.io
+- If clicked outside the modal or pressed down the ESC kye, the modal will be closed.
 - When the modal is closed, `selectedCookie` will be set with null.
 
 

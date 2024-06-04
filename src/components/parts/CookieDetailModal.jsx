@@ -82,7 +82,7 @@ const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
                     </ul>
 
                     <button type="submit"
-                            className="flex items-center gap-2 bg-blue-200 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition mx-auto">
+                            className="flex items-center gap-2 bg-blue-200 text-white py-2 px-4 rounded-md hover:bg-slate-500 hover:shadow-lg hover:shadow-blue-200 focus:bg-slate-500 focus:shadow-lg focus:shadow-blue-200 transition mt-6 m-auto">
                         Save
                     </button>
                 </form>

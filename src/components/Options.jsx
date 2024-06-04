@@ -8,7 +8,7 @@ import '../css/options.css';
 import GetAllCookies from '../utils/GetAllCookies.js';
 import ExportCookies from "../utils/ExportCookies";
 import ImportCookies from "../utils/ImportCookies";
-import removeAllCookies from "../utils/RemoveAllCookies";
+import RemoveAllCookies from "../utils/RemoveAllCookies";
 import RemoveSelectedCookies from "../utils/RemoveSelectedCookies";
 import HighlightText from "../utils/HighlightText";
 import FileInput from "./parts/FileInput";
@@ -20,7 +20,7 @@ import Background from "./parts/Background";
 import DetailChange from "../utils/DetailChange";
 
 const Options = () => {
-    const {cookies, filteredCookies, setFilteredCookies} = useCookies();
+    const {cookies, setCookies, filteredCookies, setFilteredCookies} = useCookies();
     const [buckets, setBuckets] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [selectedCookie, setSelectedCookie] = useState(null);
@@ -145,8 +145,7 @@ const Options = () => {
     };
 
     const handleRemoveAllCookies = async () => {
-        const cookiesData = await removeAllCookies();
-        setFilteredCookies(cookiesData);
+        await RemoveAllCookies(cookies, setCookies, setFilteredCookies);
     }
 
     const sortCookies = (key) => {
@@ -178,7 +177,7 @@ const Options = () => {
     }
 
     return (
-        <Background className={`p-12 font-sans text-gray-200 text-base`}>
+        <Background className={`p-12 font-sans text-gray-200 text-base min-h-screen	`}>
             <div className={selectedCookie ? "relative bg-opacity-50" : "relative"}>
                 <Background className="sticky top-0 left-0 w-full z-50 cookie-stats">
                     <div className="flex flex-row items-center justify-center px-6 pb-4 gap-6">
@@ -199,7 +198,7 @@ const Options = () => {
                         <div className="grid grid-cols-2 gap-8 items-center justify-center">
                             <form className="flex flex-col gap-2"
                                   onSubmit={handleSearchSubmit}>
-                                <div className="flex flex-row gap-2">
+                                <div className="flex flex-row items-center gap-2">
                                     <p>Search For:</p>
                                     <label htmlFor="search-box"
                                            className="block font-semibold text-gray-300">
@@ -208,9 +207,10 @@ const Options = () => {
                                             id="search-box"
                                             name="search-box"
                                             value={searchValue}
-                                            placeholder={"Enter a word may be in domain or name of a cookie..."}
+                                            placeholder={"Word may be in domain or name of a cookie..."}
                                             onChange={handleSearchChange}
                                             className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
+                                            title={"Search for cookies by domain or name"}
                                         />
                                     </label>
                                 </div>
@@ -229,6 +229,7 @@ const Options = () => {
                                     name="grouping-criteria"
                                     value={groupingCriteria}
                                     onChange={handleGroupingChange}
+                                    title={"Group by the selected criteria"}
                                     className="w-full p-2 border rounded-md text-gray-800 bg-gray-50 focus:border-slate-900 focus:ring focus:ring-blue-300 focus:ring-opacity-50 hover:border-slate-900"
                                 >
                                     <option value="domain">Domain</option>

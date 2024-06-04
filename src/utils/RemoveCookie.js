@@ -9,7 +9,7 @@ import useCookies from "../hooks/useCookies";
  * @returns {Promise<void>}
  * @constructor
  */
-const RemoveCookie = async (cookie, setFilteredCookies) => {
+const RemoveCookie = async (cookie, setCookies, setFilteredCookies) => {
 
     console.log('This cookie will be removed:')
     console.log(cookie)
@@ -28,6 +28,7 @@ const RemoveCookie = async (cookie, setFilteredCookies) => {
     const cookiesData = await GetAllCookies(db);
 
     setFilteredCookies(cookiesData);
+    setCookies(cookiesData);
 
 }
 

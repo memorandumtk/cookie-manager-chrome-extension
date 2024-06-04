@@ -1,19 +1,19 @@
 # Popup.jsx
 ### State variables
-|      Name       |  Type   | Description                                                                                            |
-|:---------------:|:-------:|--------------------------------------------------------------------------------------------------------|
-|     cookies     |  Array  | An array of cookie objects.                                                                            |
-| filteredCookies |  Array  | An array of cookie objects that match the search query.                                                |
-|   searchValue   | String  | The search string entered to the search bar.                                                           |
-| fileName | String  | The name of the file to be downloaded. |
-| chartData | Object | An object that contains the data to be used to draw the chart. |
+|      Name       |  Type   | Description |    Default Value     |
+|:---------------:|:-------:|---------------------------------------------------------------------------------------------------|:--------------------:| 
+|     cookies     |  Array  | An array of cookie objects. | [] (useCookies hook) |
+| filteredCookies |  Array  | An array of cookie objects that match the search query. | [] (useCookies hook) |
+|   searchValue   | String  | The search string entered to the search bar. |           ""           |
+| fileName | String  | The name of the file to be downloaded. | null |
+| chartData | Object | An object that contains the data to be used to draw the chart. | {} |
 
 ---
 
 ### Ref Value
-| Name |                      Description                       |
-| :---: |:------------------------------------------------------:|
-| debounceTimerRef | A reference to the debounce timer for cookie searching |
+| Name |                      Description                       | Default Value |
+| :---: |:------------------------------------------------------:|:-------------:|
+| debounceTimerRef | A reference to the debounce timer for cookie searching | null |
 
 ---
 
@@ -31,6 +31,11 @@
 - [ ] Cookie Chart
   - This links to `CookieChart` components and passes `chartData` variable to that.
   - In `CookieChart` components, it will draw the Doughnut chart by using `chartData` variable.
+  - The chart data is categorized by the `usage` property of the cookie object. `usage` is determined by the following rules.
+    - If the cookie name includes 'ga', 'utm', or 'analytics', then it's 'Analytics'.
+    - If the domain includes 'doubleclick' or 'ad', then it's 'Advertising'.
+    - If the cookie name includes 'pref', 'settings', or 'lang', then it's 'Preferences'.
+    - Any other cookies are categorized as 'Essential'.
 - [ ] Link to the Options page
     - This links to the Options page by using `Link` components.
 
