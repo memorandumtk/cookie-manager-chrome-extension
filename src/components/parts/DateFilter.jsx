@@ -2,6 +2,12 @@ import React, {useState} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+/**
+ * Component for the date filter.
+ * @param onDateChange
+ * @returns {Element}
+ * @constructor
+ */
 const DateFilter = ({onDateChange}) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);

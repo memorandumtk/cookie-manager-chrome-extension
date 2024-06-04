@@ -4,6 +4,12 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+/**
+ * Component for the cookie chart.
+ * @param data
+ * @returns {Element}
+ * @constructor
+ */
 const CookieChart = ({ data }) => {
     const chartData = {
         labels: Object.keys(data),

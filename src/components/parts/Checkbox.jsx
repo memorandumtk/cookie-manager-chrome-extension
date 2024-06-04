@@ -8,7 +8,6 @@
  * @returns {JSX.Element}
  * reference: https://marek-rozmus.medium.com/styling-checkbox-with-tailwind-46a92c157e2d
  */
-
 const Checkbox = ({key, id, label, onChange, disabled = false}) => {
     return (
         <div className="w-full flex gap-4 justify-start items-center" key={key}>

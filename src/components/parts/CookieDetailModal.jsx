@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import CookieDetail from "./CookieDetail";
 import Background from "./Background";
 
@@ -13,6 +13,7 @@ import Background from "./Background";
 const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
     // State to store the local changes
     const [localDetails, setLocalDetails] = useState(cookie.details);
+    const outsideModalRef = useRef(null);
 
     const handleDetailChangeSubmit = async (event) => {
         event.preventDefault();
@@ -31,12 +32,34 @@ const CookieDetailModal = ({cookie, onClose, onDetailChange}) => {
         setLocalDetails(prevDetails => ({ ...prevDetails, [name]: value }));
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            onClose();
+        }
+    };
+
+    const handleClickOutside = (event) => {
+        if (outsideModalRef.current && outsideModalRef.current === event.target) {
+            onClose();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const arrayOfDetails = Object.entries(localDetails);
 
     return (
-        <div className="fixed inset-0 flex flex-col items-center justify-center p-16 z-50">
-            <Background className="text-gray-200 rounded-[32px] border-1 border-blue-200 shadow-lg shadow-blue-200 overflow-auto p-6">
-                <div className="flex flex-row justify-center gap-8 items-center border-b">
+        <div ref={outsideModalRef} className="fixed inset-0 flex flex-col items-center justify-center p-16 z-50">
+            <Background className="text-gray-200 rounded-[32px] border-1 border-blue-200 shadow-lg shadow-blue-200 overflow-auto p-8">
+                <div  className="flex flex-row justify-center gap-8 items-center border-b">
                     <h2 className="text-base font-bold">Details of{'  '}<span
                         className="text-2xl">{cookie.details.name}</span>{'  '}of {'  '}<span
                         className="text-2xl">{cookie.details.domain}</span></h2>

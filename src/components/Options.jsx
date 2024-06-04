@@ -181,7 +181,7 @@ const Options = () => {
         <Background className={`p-12 font-sans text-gray-200 text-base`}>
             <div className={selectedCookie ? "relative bg-opacity-50" : "relative"}>
                 <Background className="sticky top-0 left-0 w-full z-50 cookie-stats">
-                    <div className="flex flex-row items-center px-6 pb-4 gap-6">
+                    <div className="flex flex-row items-center justify-center px-6 pb-4 gap-6">
                         <p className="text-slate-200 text-xl font-bold">Your total number of cookies: {' '}
                             <span className="text-2xl">{
                                 cookies.length

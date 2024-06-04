@@ -55,6 +55,7 @@
 #### Modal for cookie detail
 - This will be displayed when the `selectedCookie` has truthy value.
 - In the modal, all cookie data is appeared. The `value` and `expirationDate` properties can be edited with input fields. To do that, the `handleDetailChange` function is called and the cookie data will be updated.
+- **Although it is not recommended to change a value of the cookie unless you are sure what you are doing.** As my experience, I couldn't log in to chatgpt website when I changed the value of the cookie: .1rx.io
 - When the modal is closed, `selectedCookie` will be set with null.
 
 

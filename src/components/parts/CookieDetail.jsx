@@ -3,6 +3,8 @@ import DatePicker from "react-datepicker";
 
 /**
  * Component for a single cookie detail.
+ * @param detail
+ * @param onDetailChange
  */
 const CookieDetail = ({detail, onDetailChange}) => {
 

@@ -6,7 +6,6 @@
  * @returns {JSX.Element}
  * reference: https://marek-rozmus.medium.com/styling-checkbox-with-tailwind-46a92c157e2d
  */
-
 const CheckboxForOneCookie = ({ cookie, id, onChange }) => {
     return (
         <div className="w-full flex gap-4 justify-center items-center" key={cookie.key_name}>

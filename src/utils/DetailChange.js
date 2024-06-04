@@ -1,6 +1,16 @@
 import {openDB} from "idb";
 import GetAllCookies from "./GetAllCookies";
 
+/**
+ * Update a cookie in the IndexedDB and the browser(chrome.cookie).
+ * @param name
+ * @param value
+ * @param selectedCookie
+ * @param setSelectedCookie
+ * @param setFilteredCookies
+ * @returns {Promise<void>}
+ * @constructor
+ */
 const DetailChange = async (name, value, selectedCookie, setSelectedCookie, setFilteredCookies) => {
 
     setSelectedCookie((prevCookie) => {
