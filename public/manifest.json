@@ -1,5 +1,5 @@
 {
-  "name": "Chrome React Cookie Manager",
+  "name": "Cookie Manager With React",
   "description": "An extension to manage cookies in Chrome with using React.",
   "version": "1.0",
   "manifest_version": 3,
