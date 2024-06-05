@@ -22,7 +22,7 @@
     "build": "react-scripts build",
     "build-for-extension": "rm -rf built-extension/* && react-scripts build && cp public/manifest.json built-extension/ && cp public/background.js built-extension/ && cp -r build/* built-extension/",
     "build-for-extension-with-idb": "rm -rf built-extension && mkdir -p built-extension && react-scripts build && cp public/manifest.json built-extension/ && cp src/background/background.js built-extension/ && cp -r build/* built-extension/ && node copy-idb.js",
-    "build-for-extension-with-idb-with-options-page": "rm -rf built-extension && mkdir -p built-extension && react-app-rewired build && cp public/manifest.json built-extension/ && cp src/background/background.js built-extension/ && cp -r build/* built-extension/ && node copy-idb.js",
+    "build-for-extension-with-idb-with-options-page": "rm -rf built-extension && mkdir -p built-extension && react-app-rewired build && cp public/manifest.json built-extension/ && cp src/background/background.js built-extension/ && cp -r build/* built-extension/ && node copy-idb.js && cp -r public/images built-extension/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
