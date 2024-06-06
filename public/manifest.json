@@ -14,9 +14,7 @@
   },
   "permissions": [
     "cookies",
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
   ],
   "options_page": "options.html",
   "background": {
@@ -27,8 +25,5 @@
     "16": "images/cookie.png",
     "48": "images/cookie.png",
     "128": "images/cookie.png"
-  },
-  "host_permissions": [
-    "*://*/"
-  ]
+  }
 }

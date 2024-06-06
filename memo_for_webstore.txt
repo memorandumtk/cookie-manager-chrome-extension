@@ -1,0 +1,21 @@
+I've been thinking if there is an application to be able to see what kind of cookie and how many cookies I have.
+Then here is a simple cookie manager chrome extension! Which allows you to manipulate cookies in your browser with such following features. This extension uses indexedDB to store cookies, so you don't need to access to chrome's cookie API every time when you need information.
+This extension is built with React.js and Tailwind.
+
+## Main Features
+- See detail information of cookies
+- Edit cookie value
+- See the total number of cookies and categorized information
+- Search cookies by name, domain, and expiration date range
+- Export cookies to a JSON file
+- Import cookies from a JSON file
+- Clear all cookies
+- Delete selected cookies or one by one
+
+
+
+This is an extension for the user to understand what and how many cookie data the user has.
+
+The cookies permission allows your extension to interact with browser cookies. This includes reading, modifying, and deleting cookies.
+
+The storage permission allows your extension to use the Chrome Storage API, which provides a way to store and retrieve data from indexedDB. 

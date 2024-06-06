@@ -5,6 +5,7 @@ import useCookies from "../hooks/useCookies";
 /**
  * Remove a cookie from the IndexedDB and the browser(chrome.cookie).
  * @param cookie
+ * @param setCookies
  * @param setFilteredCookies
  * @returns {Promise<void>}
  * @constructor

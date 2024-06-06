@@ -51,7 +51,7 @@ const Options = () => {
     };
 
     const handleRemoveSelectedCookies = async () => {
-        await RemoveSelectedCookies(buckets, setBuckets, setFilteredCookies);
+        await RemoveSelectedCookies(buckets, setBuckets, setCookies, setFilteredCookies);
     }
 
     const toggleCheckbox = (cookieKeyName) => {
@@ -342,7 +342,7 @@ const Options = () => {
                                                 <button
                                                     onClick={async (event) => {
                                                         event.stopPropagation();
-                                                        await RemoveCookie(cookie, setFilteredCookies);
+                                                        await RemoveCookie(cookie, setCookies, setFilteredCookies);
                                                     }}
                                                     className="bg-red-400 text-white py-1 px-2 rounded-md"
                                                 >

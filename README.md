@@ -1,8 +1,8 @@
 # Cookie manager chrome extension
 
-This is a simple cookie manager chrome extension, allows you to manipulate cookies in your browser. This extension uses indexedDB to store cookies, so you don't need to access to chrome's cookie API everytime when you need information.
+I've been thinking if there is an application to be able to see what kind of cookie and how many cookies I have.
+Then here is a simple cookie manager chrome extension! Which allows you to manipulate cookies in your browser with such following features. This extension uses indexedDB to store cookies, so you don't need to access to chrome's cookie API every time when you need information.
 This extension is built with React.js and Tailwind.
-
 ---
 
 ## Features
