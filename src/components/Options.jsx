@@ -108,11 +108,6 @@ const Options = () => {
         performSearch(searchValue, {startDate, endDate});
     };
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        performSearch(searchValue, dateRange);
-    }
-
     const performSearch = (value, dateRange) => {
         let filtered = filteredCookies;
         if (value) {
@@ -196,8 +191,7 @@ const Options = () => {
 
                     <div className="flex flex-col gap-4 items-center">
                         <div className="grid grid-cols-2 gap-8 items-center justify-center">
-                            <form className="flex flex-col gap-2"
-                                  onSubmit={handleSearchSubmit}>
+                            <form className="flex flex-col gap-2">
                                 <div className="flex flex-row items-center gap-2">
                                     <p>Search For:</p>
                                     <label htmlFor="search-box"
