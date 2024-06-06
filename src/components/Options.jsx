@@ -173,7 +173,7 @@ const Options = () => {
         if (file) {
             setFileName(file.name);
         }
-        await ImportCookies(file, setFilteredCookies);
+        await ImportCookies(file, setCookies, setFilteredCookies);
     }
 
     return (

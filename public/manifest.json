@@ -13,8 +13,11 @@
     "default_title": "Cookie Manager"
   },
   "permissions": [
-    "cookies",
-    "storage"
+    "cookies"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
   ],
   "options_page": "options.html",
   "background": {

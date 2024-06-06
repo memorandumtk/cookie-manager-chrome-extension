@@ -19,7 +19,9 @@ const useCookies = () => {
 
         console.log("UseCookiesCustomHook.js's UseCookies() called");
 
-        fetchData();
+        fetchData()
+            .then(() => console.log('Cookies fetched and stored.'))
+            .catch((error) => console.error('Error fetching cookies:', error));
     }, []);
 
     return { cookies, setCookies, filteredCookies, setFilteredCookies };
